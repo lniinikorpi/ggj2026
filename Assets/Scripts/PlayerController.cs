@@ -23,19 +23,37 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 10f)] private float airTurnSpeedMultiplier = 0.6f;
 
     [Header("Jump Settings")]
-    [SerializeField] private float jumpImpulse = 7f;
+    [SerializeField] private float jumpImpulseMax = 7f;
+    [SerializeField] private float jumpImpulseMin = 3.5f;
+    [SerializeField] private float jumpImpulseHoldMax = .5f;
     [SerializeField] private float jumpCooldown = 0.1f;
+    private float currentJumpImpulse = 0f;
+    private bool isJumpHold = false;
 
     [Header("Turn Tilt Settings")]
     [SerializeField, Range(0f, 45f)] private float maxTurnTiltDegrees = 12f;
     [SerializeField, Range(0.1f, 30f)] private float turnTiltSmoothing = 10f;
     [SerializeField, Range(0f, 0.5f)] private float turnInputDeadzone = 0.02f;
 
+    [Header("Camera Target Settings")]
+    [SerializeField] private float cameraYawOffset = 0f;
+    [SerializeField, Range(-89f, 89f)] private float cameraPitch = 10f;
+    [SerializeField, Range(0.01f, 2f)] private float cameraYawSmoothTime = 0.12f;
+    [SerializeField, Range(0.01f, 2f)] private float cameraPitchSmoothTime = 0.12f;
+    [SerializeField, Range(0.01f, 2f)] private float cameraUpSmoothTime = 0.08f;
+
     private Rigidbody rb;
     private Vector2 playerInput;
     private float currentYaw;
     private float lastJumpTime;
     private float currentTurnTilt;
+
+    private float cameraYaw;
+    private float cameraPitchCurrent;
+    private float cameraYawVelocity;
+    private float cameraPitchVelocity;
+    private Vector3 cameraUpCurrent;
+    private Vector3 cameraUpVelocity;
 
     private void Awake()
     {
@@ -51,12 +69,18 @@ public class PlayerController : MonoBehaviour
         
         // Initialize yaw based on current rotation
         currentYaw = transform.eulerAngles.y;
+
+        // Initialize camera target smoothing to current values to avoid a startup snap.
+        cameraYaw = currentYaw + cameraYawOffset;
+        cameraPitchCurrent = cameraPitch;
+        cameraUpCurrent = Vector3.up;
     }
 
     void Update()
     {
         UpdateMeshTransform();
         UpdateCameraTargetTransform();
+        if (isJumpHold) HoldJump(Time.deltaTime);
     }
 
     void FixedUpdate()
@@ -80,6 +104,8 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetBool("Jump", false);
             animator.SetBool("JumpStart", true);
+            isJumpHold = true;
+            currentJumpImpulse = 0f;
         }
         else
         {
@@ -88,11 +114,19 @@ public class PlayerController : MonoBehaviour
             velocity.y = 0f;
             rb.linearVelocity = velocity;
 
+            float jumpMultiplier = currentJumpImpulse / jumpImpulseHoldMax;
+            float jumpImpulse = jumpImpulseMin + (jumpImpulseMax - jumpImpulseMin) * jumpMultiplier;
             rb.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
             lastJumpTime = Time.time;
             animator.SetBool("Jump", true);
             animator.SetBool("JumpStart", false);
+            isJumpHold = false;
         }
+    }
+
+    private void HoldJump(float delta)
+    {
+        currentJumpImpulse = Mathf.Clamp(currentJumpImpulse + delta, 0, jumpImpulseHoldMax);
     }
 
     private bool IsGrounded()
@@ -164,7 +198,11 @@ public class PlayerController : MonoBehaviour
         Quaternion targetRotation = Quaternion.LookRotation(alignedForward, up);
 
         float turnInput = Mathf.Abs(playerInput.x) > turnInputDeadzone ? playerInput.x : 0f;
-        float targetTurnTilt = -turnInput * maxTurnTiltDegrees;
+
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        float speedNormalized = maxSpeed > 0.0001f ? Mathf.Clamp01(horizontalVelocity.magnitude / maxSpeed) : 0f;
+
+        float targetTurnTilt = -turnInput * maxTurnTiltDegrees * speedNormalized;
         currentTurnTilt = Mathf.Lerp(currentTurnTilt, targetTurnTilt, Time.fixedDeltaTime * turnTiltSmoothing);
 
         Quaternion bankRotation = Quaternion.AngleAxis(currentTurnTilt, targetRotation * Vector3.forward);
@@ -180,21 +218,37 @@ public class PlayerController : MonoBehaviour
         // Position follows exactly
         cameraTarget.position = transform.position;
 
-        // Base rotation from yaw
-        Vector3 forward = Quaternion.Euler(0, currentYaw, 0) * Vector3.forward;
-        Vector3 up = Vector3.up;
+        // Smooth yaw/pitch while still aligning the target to ramps (ground normal).
+        // We intentionally do NOT apply the mesh's turn-bank tilt here.
 
-        // Adjust for slope (same as mesh), but do NOT apply turn banking tilt.
+        float desiredYaw = currentYaw + cameraYawOffset;
+        cameraYaw = Mathf.SmoothDampAngle(cameraYaw, desiredYaw, ref cameraYawVelocity, cameraYawSmoothTime);
+
+        float desiredPitch = cameraPitch;
+        cameraPitchCurrent = Mathf.SmoothDampAngle(cameraPitchCurrent, desiredPitch, ref cameraPitchVelocity, cameraPitchSmoothTime);
+
+        // Determine and smooth the "up" direction from the ground when available.
+        Vector3 desiredUp = Vector3.up;
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, raycastDistance, groundLayer))
         {
-            up = hit.normal;
+            desiredUp = hit.normal;
         }
 
-        Vector3 right = Vector3.Cross(up, forward);
-        Vector3 alignedForward = Vector3.Cross(right, up);
+        cameraUpCurrent = Vector3.SmoothDamp(cameraUpCurrent, desiredUp, ref cameraUpVelocity, cameraUpSmoothTime);
+        Vector3 up = cameraUpCurrent.sqrMagnitude > 0.0001f ? cameraUpCurrent.normalized : Vector3.up;
 
-        Quaternion targetRotation = Quaternion.LookRotation(alignedForward, up);
+        // Build a slope-aligned base rotation from the smoothed yaw.
+        Vector3 forward = Quaternion.Euler(0f, cameraYaw, 0f) * Vector3.forward;
+        Vector3 alignedForward = Vector3.ProjectOnPlane(forward, up);
+        if (alignedForward.sqrMagnitude < 0.0001f)
+        {
+            alignedForward = Vector3.ProjectOnPlane(Vector3.forward, up);
+        }
+        alignedForward.Normalize();
+        Quaternion baseRotation = Quaternion.LookRotation(alignedForward, up);
 
-        cameraTarget.rotation = Quaternion.Slerp(cameraTarget.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed);
+        // Apply pitch around the base rotation's local right axis.
+        Quaternion pitchRotation = Quaternion.AngleAxis(cameraPitchCurrent, baseRotation * Vector3.right);
+        cameraTarget.rotation = pitchRotation * baseRotation;
     }
 }
