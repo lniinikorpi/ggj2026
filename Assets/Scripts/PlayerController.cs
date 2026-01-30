@@ -16,9 +16,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float raycastDistance = 1.2f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Jump Settings")]
+    [SerializeField] private float jumpImpulse = 7f;
+    [SerializeField] private float jumpCooldown = 0.1f;
+
     private Rigidbody rb;
     private Vector2 playerInput;
     private float currentYaw;
+    private float lastJumpTime;
 
     private void Awake()
     {
@@ -49,6 +54,25 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputValue value)
     {
         playerInput = value.Get<Vector2>();
+    }
+
+    public void OnJump()
+    {
+        if (Time.time < lastJumpTime + jumpCooldown) return;
+        if (!IsGrounded()) return;
+
+        // Make jumps consistent regardless of current vertical motion.
+        Vector3 velocity = rb.linearVelocity;
+        velocity.y = 0f;
+        rb.linearVelocity = velocity;
+
+        rb.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
+        lastJumpTime = Time.time;
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, raycastDistance, groundLayer);
     }
 
     private void MovePlayer()
