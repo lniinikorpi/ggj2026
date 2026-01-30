@@ -72,17 +72,27 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputValue value)
     {
-        Debug.Log(value.Get<float>());
         if (Time.time < lastJumpTime + jumpCooldown) return;
         if (!IsGrounded()) return;
+        
+        float val = value.Get<float>();
+        if (val == 1.0f)
+        {
+            animator.SetBool("Jump", false);
+            animator.SetBool("JumpStart", true);
+        }
+        else
+        {
+            // Make jumps consistent regardless of current vertical motion.
+            Vector3 velocity = rb.linearVelocity;
+            velocity.y = 0f;
+            rb.linearVelocity = velocity;
 
-        // Make jumps consistent regardless of current vertical motion.
-        Vector3 velocity = rb.linearVelocity;
-        velocity.y = 0f;
-        rb.linearVelocity = velocity;
-
-        rb.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
-        lastJumpTime = Time.time;
+            rb.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
+            lastJumpTime = Time.time;
+            animator.SetBool("Jump", true);
+            animator.SetBool("JumpStart", false);
+        }
     }
 
     private bool IsGrounded()
