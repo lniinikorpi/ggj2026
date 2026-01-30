@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private GameObject playerMesh;
+    [SerializeField] private Transform cameraTarget;
+    [SerializeField] private Animator animator;
     
     [Header("Movement Settings")]
     [SerializeField] private float acceleration = 20f;
@@ -16,14 +18,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float raycastDistance = 1.2f;
     [SerializeField] private LayerMask groundLayer;
 
+    [Header("Air Control Settings")]
+    [SerializeField, Range(0f, 1f)] private float airAccelerationMultiplier = 0.35f;
+    [SerializeField, Range(0f, 10f)] private float airTurnSpeedMultiplier = 0.6f;
+
     [Header("Jump Settings")]
     [SerializeField] private float jumpImpulse = 7f;
     [SerializeField] private float jumpCooldown = 0.1f;
+
+    [Header("Turn Tilt Settings")]
+    [SerializeField, Range(0f, 45f)] private float maxTurnTiltDegrees = 12f;
+    [SerializeField, Range(0.1f, 30f)] private float turnTiltSmoothing = 10f;
+    [SerializeField, Range(0f, 0.5f)] private float turnInputDeadzone = 0.02f;
 
     private Rigidbody rb;
     private Vector2 playerInput;
     private float currentYaw;
     private float lastJumpTime;
+    private float currentTurnTilt;
 
     private void Awake()
     {
@@ -43,12 +55,14 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        UpdateMeshTransform();
+        UpdateCameraTargetTransform();
     }
 
     void FixedUpdate()
     {
-        MovePlayer();
-        UpdateMeshTransform();
+        bool grounded = IsGrounded();
+        MovePlayer(grounded);
     }
 
     public void OnMove(InputValue value)
@@ -56,8 +70,9 @@ public class PlayerController : MonoBehaviour
         playerInput = value.Get<Vector2>();
     }
 
-    public void OnJump()
+    public void OnJump(InputValue value)
     {
+        Debug.Log(value.Get<float>());
         if (Time.time < lastJumpTime + jumpCooldown) return;
         if (!IsGrounded()) return;
 
@@ -75,12 +90,15 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.down, raycastDistance, groundLayer);
     }
 
-    private void MovePlayer()
+    private void MovePlayer(bool grounded)
     {
+        float appliedTurnSpeed = grounded ? turnSpeed : (turnSpeed * airTurnSpeedMultiplier);
+        float appliedAcceleration = grounded ? acceleration : (acceleration * airAccelerationMultiplier);
+
         // Update rotation (yaw) based on horizontal input
         if (Mathf.Abs(playerInput.x) > 0.01f)
         {
-            currentYaw += playerInput.x * turnSpeed * Time.fixedDeltaTime;
+            currentYaw += playerInput.x * appliedTurnSpeed * Time.fixedDeltaTime;
         }
 
         // Calculate forward direction based on current yaw
@@ -89,9 +107,9 @@ public class PlayerController : MonoBehaviour
         if (Mathf.Abs(playerInput.y) > 0.1f)
         {
             // Apply acceleration in the forward direction based on vertical input
-            rb.AddForce(forwardDirection * (playerInput.y * acceleration), ForceMode.Acceleration);
+            rb.AddForce(forwardDirection * (playerInput.y * appliedAcceleration), ForceMode.Acceleration);
         }
-        else
+        else if (grounded)
         {
             // Apply friction when no forward/backward input
             Vector3 velocity = rb.linearVelocity;
@@ -134,6 +152,39 @@ public class PlayerController : MonoBehaviour
         Vector3 alignedForward = Vector3.Cross(right, up);
         
         Quaternion targetRotation = Quaternion.LookRotation(alignedForward, up);
-        playerMesh.transform.rotation = Quaternion.Slerp(playerMesh.transform.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed);
+
+        float turnInput = Mathf.Abs(playerInput.x) > turnInputDeadzone ? playerInput.x : 0f;
+        float targetTurnTilt = -turnInput * maxTurnTiltDegrees;
+        currentTurnTilt = Mathf.Lerp(currentTurnTilt, targetTurnTilt, Time.fixedDeltaTime * turnTiltSmoothing);
+
+        Quaternion bankRotation = Quaternion.AngleAxis(currentTurnTilt, targetRotation * Vector3.forward);
+        Quaternion finalRotation = bankRotation * targetRotation;
+
+        playerMesh.transform.rotation = Quaternion.Slerp(playerMesh.transform.rotation, finalRotation, Time.fixedDeltaTime * rotationSpeed);
+    }
+
+    private void UpdateCameraTargetTransform()
+    {
+        if (cameraTarget == null) return;
+
+        // Position follows exactly
+        cameraTarget.position = transform.position;
+
+        // Base rotation from yaw
+        Vector3 forward = Quaternion.Euler(0, currentYaw, 0) * Vector3.forward;
+        Vector3 up = Vector3.up;
+
+        // Adjust for slope (same as mesh), but do NOT apply turn banking tilt.
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, raycastDistance, groundLayer))
+        {
+            up = hit.normal;
+        }
+
+        Vector3 right = Vector3.Cross(up, forward);
+        Vector3 alignedForward = Vector3.Cross(right, up);
+
+        Quaternion targetRotation = Quaternion.LookRotation(alignedForward, up);
+
+        cameraTarget.rotation = Quaternion.Slerp(cameraTarget.rotation, targetRotation, Time.fixedDeltaTime * rotationSpeed);
     }
 }
