@@ -42,6 +42,12 @@ public class Tracker : MonoBehaviour
                 {
                     Debug.Log("Finish");
                     gameData.totalTime = gameData.currentTotalTime;
+
+                    if (HighScoreManager.Instance.IsEligibleForLeaderboard(gameData.totalTime))
+                    {
+                        Debug.Log("Eligible for leaderboard");
+                        HighScoreManager.Instance.AddNewScore("", gameData.totalTime);
+                    }
                     return;
                 }
             
