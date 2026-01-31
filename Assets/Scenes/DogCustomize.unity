@@ -2748,13 +2748,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3424216826444914599, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 4267873156045091944, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 8701722147453279284, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 8171373414315422335, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 39150327575785477, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 3023568121381873017, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 5382111250170046132, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 625515635628011727, guid: eaba263a84901404c98963114859e384, type: 3}
     m_RemovedGameObjects:
     - {fileID: 3643795757613708644, guid: eaba263a84901404c98963114859e384, type: 3}
     - {fileID: 5117792497070101789, guid: eaba263a84901404c98963114859e384, type: 3}
     - {fileID: 502496392750169742, guid: eaba263a84901404c98963114859e384, type: 3}
     - {fileID: 185076302144638586, guid: eaba263a84901404c98963114859e384, type: 3}
     - {fileID: 2632198970577996489, guid: eaba263a84901404c98963114859e384, type: 3}
+    - {fileID: 2335498704568979869, guid: eaba263a84901404c98963114859e384, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eaba263a84901404c98963114859e384, type: 3}
