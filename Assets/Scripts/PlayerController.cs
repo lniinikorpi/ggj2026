@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private List<Animator> animators;
     [SerializeField] private Animator boardAnimator;
     [SerializeField] private CanvasGroup fadeCanvas;
+    [SerializeField] private RandomBailText randomBailText;
 
     [Header("Customization")]
     [SerializeField] private List<SkinnedMeshRenderer> maskRenderers;
@@ -394,7 +395,7 @@ public class PlayerController : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance, groundLayer);
     }
 
-    private void EnterRagdoll()
+    private void EnterRagdoll(bool isWater = false)
     {
         if (isRagdoll) return;
         isRagdoll = true;
@@ -411,6 +412,7 @@ public class PlayerController : MonoBehaviour
 
         SetControllerEnabled(false);
         SetRagdollEnabled(true);
+        randomBailText.TriggerBail(isWater);
 
         // Give the ragdoll the incoming motion so the transition feels continuous.
         if (ragdollPlayerRigidbody != null)
@@ -967,5 +969,12 @@ public class PlayerController : MonoBehaviour
         // Apply pitch around the base rotation's local right axis.
         Quaternion pitchRotation = Quaternion.AngleAxis(cameraPitchCurrent, baseRotation * Vector3.right);
         cameraTarget.rotation = pitchRotation * baseRotation;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Water")) {
+            EnterRagdoll(true);
+        }
     }
 }

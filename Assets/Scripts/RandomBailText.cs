@@ -28,7 +28,7 @@ public class RandomBailText : MonoBehaviour
 
     void Start()
     {
-        textRect.gameObject.SetActive(false);
+        textRect.localScale = Vector3.zero;
     }
 
     // Call this and pass 'true' if they hit water, 'false' if it's just a bail
@@ -53,7 +53,6 @@ public class RandomBailText : MonoBehaviour
 
     private IEnumerator AnimateText()
     {
-        textRect.gameObject.SetActive(true);
 
         // --- POP IN EFFECT ---
         float elapsed = 0;
@@ -80,7 +79,7 @@ public class RandomBailText : MonoBehaviour
             yield return null;
         }
 
-        textRect.gameObject.SetActive(false);
+        textRect.localScale = Vector3.zero;
         displayLib.alpha = 1f; // Reset for next time
     }
 }
