@@ -13,6 +13,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator boardAnimator;
     [SerializeField] private CanvasGroup fadeCanvas;
     [SerializeField] private RandomBailText randomBailText;
+    [SerializeField] private AudioSource boardAudioSource;
+
+    [Header("Board Audio")]
+    [SerializeField, Range(0f, 1f)] private float boardAudioMaxVolume = 1f;
+    [SerializeField, Range(0.1f, 3f)] private float boardAudioMinPitch = 0.85f;
+    [SerializeField, Range(0.1f, 3f)] private float boardAudioMaxPitch = 1.25f;
 
     [Header("Customization")]
     [SerializeField] private List<SkinnedMeshRenderer> maskRenderers;
@@ -243,7 +249,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (isRagdoll) return;
+        if (isRagdoll)
+        {
+            ApplyBoardAudio(0f, boardAudioMinPitch);
+            return;
+        }
 
         UpdateMeshTransform();
         UpdateCameraTargetTransform();
@@ -288,7 +298,11 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isRagdoll) return;
+        if (isRagdoll)
+        {
+            ApplyBoardAudio(0f, boardAudioMinPitch);
+            return;
+        }
 
         bool grounded = IsGrounded();
 
@@ -298,10 +312,32 @@ public class PlayerController : MonoBehaviour
         }
 
         MovePlayer(grounded);
+
+        UpdateBoardAudio(grounded);
         foreach (var anim in animators)
         {
             anim.SetFloat("Speed", rb.linearVelocity.magnitude);
         }
+    }
+
+    private void UpdateBoardAudio(bool grounded)
+    {
+        if (rb == null) return;
+
+        float speed = rb.linearVelocity.magnitude;
+        float t = maxSpeed <= 0f ? 0f : Mathf.Clamp01(speed / maxSpeed);
+
+        float volume = grounded ? t * boardAudioMaxVolume : 0f;
+        float pitch = Mathf.Lerp(boardAudioMinPitch, boardAudioMaxPitch, t);
+
+        ApplyBoardAudio(volume, pitch);
+    }
+
+    private void ApplyBoardAudio(float volume, float pitch)
+    {
+        if (boardAudioSource == null) return;
+        boardAudioSource.volume = volume;
+        boardAudioSource.pitch = pitch;
     }
 
     private static bool CanWriteVelocity(Rigidbody body)
