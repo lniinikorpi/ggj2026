@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -41,6 +42,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0.01f, 2f)] private float cameraYawSmoothTime = 0.12f;
     [SerializeField, Range(0.01f, 2f)] private float cameraPitchSmoothTime = 0.12f;
     [SerializeField, Range(0.01f, 2f)] private float cameraUpSmoothTime = 0.08f;
+    
+    [Header("Tricks")]
+    [SerializeField] private List<TrickData> tricks;
+
+    [SerializeField] private string idleAnimationName = "Idle";
+
+    [SerializeField, Range(0.1f, 1f)] private float trickDirectionDeadzone = 0.5f;
+    [SerializeField] private int maxBufferedDirections = 8;
+
+    private float isTricking;
+    private float wasTricking;
+
+    private bool wasGrounded;
+    private bool trickLocked;
+    private readonly List<Direction> bufferedDirections = new List<Direction>();
+    private Direction? lastBufferedDirection;
 
     private Rigidbody rb;
     private Vector2 playerInput;
@@ -81,6 +98,20 @@ public class PlayerController : MonoBehaviour
         UpdateMeshTransform();
         UpdateCameraTargetTransform();
         if (isJumpHold) HoldJump(Time.deltaTime);
+
+        bool grounded = IsGrounded();
+        if (grounded && !wasGrounded)
+        {
+            bufferedDirections.Clear();
+            lastBufferedDirection = null;
+        }
+        else if (!grounded && wasGrounded)
+        {
+            bufferedDirections.Clear();
+            lastBufferedDirection = null;
+        }
+
+        wasGrounded = grounded;
     }
 
     void FixedUpdate()
@@ -92,6 +123,30 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputValue value)
     {
         playerInput = value.Get<Vector2>();
+
+        if (TryMapInputToDirection(playerInput, out Direction direction))
+        {
+            bool isNewDirection = !lastBufferedDirection.HasValue || lastBufferedDirection.Value != direction;
+
+            if (isNewDirection && !IsGrounded())
+            {
+                BufferDirection(direction);
+            }
+
+            if (isNewDirection && isTricking > 0.5f)
+            {
+                TryExecuteSingleDirectionTrick(direction);
+            }
+
+            if (isNewDirection)
+            {
+                lastBufferedDirection = direction;
+            }
+        }
+        else
+        {
+            lastBufferedDirection = null;
+        }
     }
 
     public void OnJump(InputValue value)
@@ -168,6 +223,140 @@ public class PlayerController : MonoBehaviour
         {
             horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
             rb.linearVelocity = new Vector3(horizontalVelocity.x, rb.linearVelocity.y, horizontalVelocity.z);
+        }
+    }
+
+    public void OnTrick(InputValue value)
+    {
+        isTricking = value.Get<float>();
+
+        bool pressed = isTricking > 0.5f && wasTricking <= 0.5f;
+        wasTricking = isTricking;
+
+        if (!pressed) return;
+        if (trickLocked) return;
+        if (IsGrounded()) return;
+
+        TrickData trick = FindBestTrickFromBuffer();
+        if (trick != null)
+        {
+            ExecuteTrick(trick);
+        }
+    }
+
+    private void BufferDirection(Direction direction)
+    {
+        bufferedDirections.Add(direction);
+        if (bufferedDirections.Count > maxBufferedDirections && maxBufferedDirections > 0)
+        {
+            bufferedDirections.RemoveAt(0);
+        }
+    }
+
+    private bool TryMapInputToDirection(Vector2 input, out Direction direction)
+    {
+        direction = Direction.Up;
+
+        float absX = Mathf.Abs(input.x);
+        float absY = Mathf.Abs(input.y);
+
+        if (absX < trickDirectionDeadzone && absY < trickDirectionDeadzone)
+        {
+            return false;
+        }
+
+        if (absX >= absY)
+        {
+            direction = input.x < 0f ? Direction.Left : Direction.Right;
+            return true;
+        }
+
+        direction = input.y < 0f ? Direction.Down : Direction.Up;
+        return true;
+    }
+
+    private TrickData FindBestTrickFromBuffer()
+    {
+        if (tricks == null || tricks.Count == 0) return null;
+        if (bufferedDirections.Count == 0) return null;
+
+        TrickData best = null;
+        int bestLen = 0;
+
+        foreach (TrickData trick in tricks)
+        {
+            if (trick == null || trick.directions == null) continue;
+            int len = trick.directions.Count;
+            if (len <= 0) continue;
+            if (len > bufferedDirections.Count) continue;
+            if (len <= bestLen) continue;
+
+            if (MatchesSuffix(bufferedDirections, trick.directions))
+            {
+                best = trick;
+                bestLen = len;
+            }
+        }
+
+        return best;
+    }
+
+    private static bool MatchesSuffix(List<Direction> buffer, List<Direction> pattern)
+    {
+        int len = pattern.Count;
+        int start = buffer.Count - len;
+        for (int i = 0; i < len; i++)
+        {
+            if (buffer[start + i] != pattern[i]) return false;
+        }
+
+        return true;
+    }
+
+    private void TryExecuteSingleDirectionTrick(Direction direction)
+    {
+        if (trickLocked) return;
+        if (IsGrounded()) return;
+
+        if (tricks == null) return;
+        foreach (TrickData trick in tricks)
+        {
+            if (trick == null || trick.directions == null) continue;
+            if (trick.directions.Count != 1) continue;
+            if (trick.directions[0] != direction) continue;
+
+            ExecuteTrick(trick);
+            return;
+        }
+    }
+
+    private void ExecuteTrick(TrickData trick)
+    {
+        if (trick == null) return;
+
+        trickLocked = true;
+
+        if (animator != null && !string.IsNullOrWhiteSpace(trick.trickName))
+        {
+            animator.Play(trick.trickName);
+        }
+        else
+        {
+            Debug.LogWarning($"Trick '{(trick != null ? trick.trickName : "<null>")}' could not be played (missing Animator or trickName).", this);
+        }
+
+        float duration = Mathf.Max(0.01f, trick.trickTime);
+        StartCoroutine(UnlockTrickAfter(duration));
+    }
+
+    private System.Collections.IEnumerator UnlockTrickAfter(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        trickLocked = false;
+
+        if (animator != null && !string.IsNullOrWhiteSpace(idleAnimationName))
+        {
+            //animator.Play(idleAnimationName);
         }
     }
 

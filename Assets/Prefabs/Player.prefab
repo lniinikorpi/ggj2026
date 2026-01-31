@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5401, y: 1.1999998, z: -2.79731}
+  m_LocalPosition: {x: 0, y: 0.65000004, z: -3.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -423,6 +423,10 @@ MonoBehaviour:
   cameraYawSmoothTime: 0.7
   cameraPitchSmoothTime: 0.7
   cameraUpSmoothTime: 0.7
+  tricks:
+  - {fileID: 11400000, guid: 04e23af4bfea43d4b83208724b159a9d, type: 2}
+  trickDirectionDeadzone: 0.5
+  maxBufferedDirections: 8
 --- !u!1 &5117792497070101789
 GameObject:
   m_ObjectHideFlags: 0
