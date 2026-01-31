@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 2050819447290304517}
   - component: {fileID: 1381564274408313596}
   - component: {fileID: 3811495715289709623}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Rock_Big_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &5635826720344906464
 Transform:

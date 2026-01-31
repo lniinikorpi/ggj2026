@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.65000004, z: -3.6200001}
+  m_LocalPosition: {x: -15.417156, y: 3.8300002, z: 15.338229}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -68,7 +68,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 60.000004
+  field of view: 70.2
   orthographic: 0
   orthographic size: 10
   m_Depth: 0
@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 4837712328838763615}
   - component: {fileID: 1913502517819510839}
   - component: {fileID: 2106919421777096}
+  - component: {fileID: 5056037575547339587}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -197,7 +198,7 @@ Transform:
   m_GameObject: {fileID: 502496392750169742}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.65000004, z: -3.62}
+  m_LocalPosition: {x: 0.47, y: 0.41000003, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -227,7 +228,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 60.000004
+    FieldOfView: 70.2
     OrthographicSize: 10
     NearClipPlane: 0.1
     FarClipPlane: 5000
@@ -259,12 +260,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
   Damping: {x: 0.2, y: 0.6, z: 0.3}
-  ShoulderOffset: {x: 0, y: 0.25, z: 0}
+  ShoulderOffset: {x: -0.47, y: 0.01, z: 0}
   VerticalArmLength: 0.4
   CameraSide: 0
-  CameraDistance: 3.62
+  CameraDistance: 1.2
   AvoidObstacles:
-    Enabled: 0
+    Enabled: 1
     CollisionFilter:
       serializedVersion: 2
       m_Bits: 64
@@ -272,6 +273,19 @@ MonoBehaviour:
     CameraRadius: 0.2
     DampingIntoCollision: 0
     DampingFromCollision: 0.5
+--- !u!114 &5056037575547339587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502496392750169742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4afa82ae3200b82408d605c3dbdd1e38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineRotateWithFollowTarget
+  Damping: 0
 --- !u!1 &3405685918614932954
 GameObject:
   m_ObjectHideFlags: 0
@@ -477,9 +491,9 @@ MonoBehaviour:
   turnInputDeadzone: 0.02
   cameraYawOffset: 0
   cameraPitch: 0
-  cameraYawSmoothTime: 0.7
-  cameraPitchSmoothTime: 0.7
-  cameraUpSmoothTime: 0.7
+  cameraYawSmoothTime: 0.2
+  cameraPitchSmoothTime: 0.2
+  cameraUpSmoothTime: 0.2
   tricks:
   - {fileID: 11400000, guid: ba4c2d22414ff2748ae2d33c2b55767e, type: 2}
   - {fileID: 11400000, guid: e49d9f259bccb8e418ebc37d2c8e2094, type: 2}
