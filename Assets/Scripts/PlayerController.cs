@@ -304,6 +304,35 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private static bool CanWriteVelocity(Rigidbody body)
+    {
+        return body != null && !body.isKinematic;
+    }
+
+    private static readonly int JumpParam = Animator.StringToHash("Jump");
+    private static readonly int JumpStartParam = Animator.StringToHash("JumpStart");
+
+    private static bool HasBoolParameter(Animator animator, int parameterHash)
+    {
+        if (animator == null) return false;
+
+        foreach (var param in animator.parameters)
+        {
+            if (param.type == AnimatorControllerParameterType.Bool && param.nameHash == parameterHash)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static void SetBoolIfExists(Animator animator, int parameterHash, bool value)
+    {
+        if (!HasBoolParameter(animator, parameterHash)) return;
+        animator.SetBool(parameterHash, value);
+    }
+
     public void OnMove(InputValue value)
     {
         playerInput = value.Get<Vector2>();
@@ -348,14 +377,15 @@ public class PlayerController : MonoBehaviour
     {
         if (Time.time < lastJumpTime + jumpCooldown) return;
         if (!IsGrounded()) return;
+        if (!CanWriteVelocity(rb)) return;
         
         float val = value.Get<float>();
         if (val == 1.0f)
         {
             foreach (var anim in animators)
             {
-                anim.SetBool("Jump", false);
-                anim.SetBool("JumpStart", true);
+                SetBoolIfExists(anim, JumpParam, false);
+                SetBoolIfExists(anim, JumpStartParam, true);
             }
             isJumpHold = true;
             currentJumpImpulse = 0f;
@@ -373,8 +403,8 @@ public class PlayerController : MonoBehaviour
             lastJumpTime = Time.time;
             foreach (var anim in animators)
             {
-                anim.SetBool("Jump", true);
-                anim.SetBool("JumpStart", false);
+                SetBoolIfExists(anim, JumpParam, true);
+                SetBoolIfExists(anim, JumpStartParam, false);
             }
             isJumpHold = false;
         }
@@ -415,20 +445,20 @@ public class PlayerController : MonoBehaviour
         randomBailText.TriggerBail(isWater);
 
         // Give the ragdoll the incoming motion so the transition feels continuous.
-        if (ragdollPlayerRigidbody != null)
+        if (CanWriteVelocity(ragdollPlayerRigidbody))
         {
             ragdollPlayerRigidbody.linearVelocity = lastAirVelocity;
         }
 
-        if (ragdollBoardRigidbody != null)
+        if (CanWriteVelocity(ragdollBoardRigidbody))
         {
             ragdollBoardRigidbody.linearVelocity = lastAirVelocity;
         }
-        if (ragdollMask1Rigidbody != null)
+        if (CanWriteVelocity(ragdollMask1Rigidbody))
         {
             ragdollMask1Rigidbody.linearVelocity = lastAirVelocity;
         }
-        if (ragdollMask2Rigidbody != null)
+        if (CanWriteVelocity(ragdollMask2Rigidbody))
         {
             ragdollMask2Rigidbody.linearVelocity = lastAirVelocity;
         }
@@ -510,7 +540,7 @@ public class PlayerController : MonoBehaviour
         isRagdoll = false;
 
         // Reset core motion/state so controller behaves consistently after teleport.
-        if (rb != null)
+        if (CanWriteVelocity(rb))
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -549,8 +579,11 @@ public class PlayerController : MonoBehaviour
         Rigidbody controllerBody = controllerPlayerRigidbody != null ? controllerPlayerRigidbody : rb;
         if (controllerBody != null)
         {
-            controllerBody.linearVelocity = Vector3.zero;
-            controllerBody.angularVelocity = Vector3.zero;
+            if (CanWriteVelocity(controllerBody))
+            {
+                controllerBody.linearVelocity = Vector3.zero;
+                controllerBody.angularVelocity = Vector3.zero;
+            }
             controllerBody.position = currentRespawnPosition;
             controllerBody.rotation = currentRespawnRotation;
             controllerBody.Sleep();
@@ -574,16 +607,16 @@ public class PlayerController : MonoBehaviour
             {
                 if (anim == null) continue;
                 anim.enabled = true;
-                anim.SetBool("Jump", false);
-                anim.SetBool("JumpStart", false);
+                SetBoolIfExists(anim, JumpParam, false);
+                SetBoolIfExists(anim, JumpStartParam, false);
             }
         }
 
         if (boardAnimator != null)
         {
             boardAnimator.enabled = true;
-            boardAnimator.SetBool("Jump", false);
-            boardAnimator.SetBool("JumpStart", false);
+            SetBoolIfExists(boardAnimator, JumpParam, false);
+            SetBoolIfExists(boardAnimator, JumpStartParam, false);
         }
 
         // Keep ragdoll parts with the player so we don't leave pieces behind in the scene.
@@ -595,29 +628,41 @@ public class PlayerController : MonoBehaviour
         if (ragdollPlayerRigidbody != null)
         {
             ragdollPlayerRigidbody.transform.SetLocalPositionAndRotation(ragdollPlayerOffset, ragdollPlayerRotOffset);
-            ragdollPlayerRigidbody.linearVelocity = Vector3.zero;
-            ragdollPlayerRigidbody.angularVelocity = Vector3.zero;
+            if (CanWriteVelocity(ragdollPlayerRigidbody))
+            {
+                ragdollPlayerRigidbody.linearVelocity = Vector3.zero;
+                ragdollPlayerRigidbody.angularVelocity = Vector3.zero;
+            }
         }
 
         if (ragdollBoardRigidbody != null)
         {
             ragdollBoardRigidbody.transform.SetLocalPositionAndRotation(ragdollBoardOffset, ragdollBoardRotOffset);
-            ragdollBoardRigidbody.linearVelocity = Vector3.zero;
-            ragdollBoardRigidbody.angularVelocity = Vector3.zero;
+            if (CanWriteVelocity(ragdollBoardRigidbody))
+            {
+                ragdollBoardRigidbody.linearVelocity = Vector3.zero;
+                ragdollBoardRigidbody.angularVelocity = Vector3.zero;
+            }
         }
 
         if (ragdollMask1Rigidbody != null)
         {
             ragdollMask1Rigidbody.transform.SetLocalPositionAndRotation(ragdollMask1Offset, ragdollMask1RotOffset);
-            ragdollMask1Rigidbody.linearVelocity = Vector3.zero;
-            ragdollMask1Rigidbody.angularVelocity = Vector3.zero;
+            if (CanWriteVelocity(ragdollMask1Rigidbody))
+            {
+                ragdollMask1Rigidbody.linearVelocity = Vector3.zero;
+                ragdollMask1Rigidbody.angularVelocity = Vector3.zero;
+            }
         }
 
         if (ragdollMask2Rigidbody != null)
         {
             ragdollMask2Rigidbody.transform.SetLocalPositionAndRotation(ragdollMask2Offset, ragdollMask2RotOffset);
-            ragdollMask2Rigidbody.linearVelocity = Vector3.zero;
-            ragdollMask2Rigidbody.angularVelocity = Vector3.zero;
+            if (CanWriteVelocity(ragdollMask2Rigidbody))
+            {
+                ragdollMask2Rigidbody.linearVelocity = Vector3.zero;
+                ragdollMask2Rigidbody.angularVelocity = Vector3.zero;
+            }
         }
     }
 
@@ -626,13 +671,17 @@ public class PlayerController : MonoBehaviour
         if (controllerPlayerCollider != null) controllerPlayerCollider.enabled = enabled;
         if (controllerPlayerRigidbody != null)
         {
-            controllerPlayerRigidbody.isKinematic = !enabled;
-            controllerPlayerRigidbody.detectCollisions = enabled;
             if (!enabled)
             {
-                controllerPlayerRigidbody.linearVelocity = Vector3.zero;
-                controllerPlayerRigidbody.angularVelocity = Vector3.zero;
+                if (CanWriteVelocity(controllerPlayerRigidbody))
+                {
+                    controllerPlayerRigidbody.linearVelocity = Vector3.zero;
+                    controllerPlayerRigidbody.angularVelocity = Vector3.zero;
+                }
             }
+
+            controllerPlayerRigidbody.isKinematic = !enabled;
+            controllerPlayerRigidbody.detectCollisions = enabled;
         }
     }
 
@@ -671,6 +720,8 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer(bool grounded)
     {
+        if (!CanWriteVelocity(rb)) return;
+
         float appliedTurnSpeed = grounded ? turnSpeed : (turnSpeed * airTurnSpeedMultiplier);
         float appliedAcceleration = grounded ? acceleration : (acceleration * airAccelerationMultiplier);
 
