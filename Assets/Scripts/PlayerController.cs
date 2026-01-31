@@ -197,6 +197,7 @@ public class PlayerController : MonoBehaviour
         }
 
         MovePlayer(grounded);
+        animator.SetFloat("Speed", rb.linearVelocity.magnitude);
     }
 
     public void OnMove(InputValue value)

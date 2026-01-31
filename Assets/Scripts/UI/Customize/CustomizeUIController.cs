@@ -1,13 +1,16 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CustomizeUIController : MonoBehaviour
 {
-    public SkinnedMeshRenderer meshRenderer;
+    public List<SkinnedMeshRenderer> maskRenderers;
     public Transform dogTransform;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public Animator dogAnimator;
+
+    private void Start()
     {
-        
+        dogAnimator.Play("DoggoRig|Doggo_Idle_Stand");
     }
 
     // Update is called once per frame

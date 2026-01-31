@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +5,7 @@ public class CustomizeUIButton : MonoBehaviour
 {
     [SerializeField] private Material material;
     [SerializeField] private CustomizeUIController controller;
+    [SerializeField] private int maskIndex;
     private Button button;
 
     private void Awake()
@@ -16,6 +16,15 @@ public class CustomizeUIButton : MonoBehaviour
 
     private void OnClick()
     {
-        controller.meshRenderer.material = material;
+        controller.maskRenderers[maskIndex].material = material;
+        for (int i = 0; i < controller.maskRenderers.Count; i++)
+        {
+            if(i == maskIndex)
+            {
+                controller.maskRenderers[i].gameObject.SetActive(true);
+                continue;
+            }
+            controller.maskRenderers[i].gameObject.SetActive(false);
+        }
     }
 }
