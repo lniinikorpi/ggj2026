@@ -46,8 +46,6 @@ public class PlayerController : MonoBehaviour
     [Header("Tricks")]
     [SerializeField] private List<TrickData> tricks;
 
-    [SerializeField] private string idleAnimationName = "Idle";
-
     [Header("Trick Movement Helpers")]
     [SerializeField, Range(0f, 0.5f)] private float airTurnSuppressDuration = 0.12f;
 
@@ -375,7 +373,7 @@ public class PlayerController : MonoBehaviour
 
         if (animator != null && !string.IsNullOrWhiteSpace(trick.trickName))
         {
-            animator.Play(trick.trickName);
+            animator.Play(trick.clip.name);
         }
         else
         {
@@ -390,11 +388,6 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         trickLocked = false;
-
-        if (animator != null && !string.IsNullOrWhiteSpace(idleAnimationName))
-        {
-            //animator.Play(idleAnimationName);
-        }
     }
 
     private void ApplyLandingTrickBoost()
