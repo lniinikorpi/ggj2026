@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1811bede2974c1041be5304362dfb4b5, type: 3}
   m_Name: Trick2
   m_EditorClassIdentifier: Assembly-CSharp::TrickData
-  trickName: Trick1
+  trickName: Trick2
   directions: 0000000002000000
   trickTime: 0.3
