@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.4000001, z: -6}
+  m_LocalPosition: {x: -0.5401, y: 1.1999998, z: -2.79731}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -197,7 +197,7 @@ Transform:
   m_GameObject: {fileID: 502496392750169742}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.4000001, z: -6}
+  m_LocalPosition: {x: 0, y: 0.65000004, z: -3.6200001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -259,10 +259,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineThirdPersonFollow
   Damping: {x: 0.2, y: 0.6, z: 0.3}
-  ShoulderOffset: {x: 0, y: 1, z: 0}
+  ShoulderOffset: {x: 0, y: 0.25, z: 0}
   VerticalArmLength: 0.4
   CameraSide: 0
-  CameraDistance: 6
+  CameraDistance: 3.62
   AvoidObstacles:
     Enabled: 0
     CollisionFilter:
@@ -606,10 +606,18 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5016586086641492115, guid: ca3c53a49fb746844b2616d60ad19dee, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f1c61a6c39c6e4b42bca756ec8f2e15e, type: 2}
     - target: {fileID: 6234452418265066372, guid: ca3c53a49fb746844b2616d60ad19dee, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.978
       objectReference: {fileID: 0}
+    - target: {fileID: 8417361359673230750, guid: ca3c53a49fb746844b2616d60ad19dee, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: f1c61a6c39c6e4b42bca756ec8f2e15e, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
