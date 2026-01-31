@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Collider ragdollPlayerCollider;
     [SerializeField] private Rigidbody ragdollBoardRigidbody;
     [SerializeField] private Collider ragdollBoardCollider;
+    [SerializeField] private Rigidbody ragdollMask1Rigidbody;
+    [SerializeField] private Collider ragdollMask1Collider;
+    [SerializeField] private Rigidbody ragdollMask2Rigidbody;
+    [SerializeField] private Collider ragdollMask2Collider;
 
     [SerializeField] private GameDataSO gameData;
     
@@ -354,6 +358,14 @@ public class PlayerController : MonoBehaviour
         {
             ragdollBoardRigidbody.linearVelocity = lastAirVelocity;
         }
+        if (ragdollMask1Rigidbody != null)
+        {
+            ragdollMask1Rigidbody.linearVelocity = lastAirVelocity;
+        }
+        if (ragdollMask2Rigidbody != null)
+        {
+            ragdollMask2Rigidbody.linearVelocity = lastAirVelocity;
+        }
     }
 
     private void SetControllerEnabled(bool enabled)
@@ -387,6 +399,20 @@ public class PlayerController : MonoBehaviour
             ragdollBoardRigidbody.isKinematic = !enabled;
             ragdollBoardRigidbody.detectCollisions = enabled;
             ragdollBoardRigidbody.useGravity = enabled;
+        }
+        if (ragdollMask1Collider != null) ragdollMask1Collider.enabled = enabled;
+        if (ragdollMask1Rigidbody != null)
+        {
+            ragdollMask1Rigidbody.isKinematic = !enabled;
+            ragdollMask1Rigidbody.detectCollisions = enabled;
+            ragdollMask1Rigidbody.useGravity = enabled;
+        }
+        if (ragdollMask2Collider != null) ragdollMask2Collider.enabled = enabled;
+        if (ragdollMask2Rigidbody != null)
+        {
+            ragdollMask2Rigidbody.isKinematic = !enabled;
+            ragdollMask2Rigidbody.detectCollisions = enabled;
+            ragdollMask2Rigidbody.useGravity = enabled;
         }
     }
 
