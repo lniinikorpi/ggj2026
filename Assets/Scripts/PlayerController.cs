@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource boardAudioSource;
     [SerializeField] private AudioSource jumpAudioSource;
     [SerializeField] private AudioSource landAudioSource;
+    [SerializeField] private AudioSource airWheelAudioSource;
 
     [Header("Board Audio")]
     [SerializeField, Range(0f, 1f)] private float boardAudioMaxVolume = 1f;
@@ -308,6 +309,7 @@ public class PlayerController : MonoBehaviour
         if (isRagdoll)
         {
             ApplyBoardAudio(0f, boardAudioMinPitch);
+            ApplyAirWheelAudio(0f, boardAudioMinPitch);
             return;
         }
 
@@ -321,6 +323,7 @@ public class PlayerController : MonoBehaviour
         MovePlayer(grounded);
 
         UpdateBoardAudio(grounded);
+        UpdateAirWheelAudio(grounded);
         foreach (var anim in animators)
         {
             anim.SetFloat("Speed", rb.linearVelocity.magnitude);
@@ -345,6 +348,44 @@ public class PlayerController : MonoBehaviour
         if (boardAudioSource == null) return;
         boardAudioSource.volume = volume;
         boardAudioSource.pitch = pitch;
+    }
+
+    private void UpdateAirWheelAudio(bool grounded)
+    {
+        if (rb == null) return;
+
+        float speed = rb.linearVelocity.magnitude;
+        float t = maxSpeed <= 0f ? 0f : Mathf.Clamp01(speed / maxSpeed);
+
+        // While airborne, use the wheel-in-air sound instead of the ground rolling sound.
+        float volume = grounded ? 0f : t * boardAudioMaxVolume;
+        float pitch = Mathf.Lerp(boardAudioMinPitch, boardAudioMaxPitch, t);
+
+        ApplyAirWheelAudio(volume, pitch);
+    }
+
+    private void ApplyAirWheelAudio(float volume, float pitch)
+    {
+        if (airWheelAudioSource == null) return;
+
+        airWheelAudioSource.volume = volume;
+        airWheelAudioSource.pitch = pitch;
+
+        // Avoid keeping the source running silently (helps if it isn't set to "Play On Awake").
+        if (volume > 0.001f)
+        {
+            if (!airWheelAudioSource.isPlaying)
+            {
+                airWheelAudioSource.Play();
+            }
+        }
+        else
+        {
+            if (airWheelAudioSource.isPlaying)
+            {
+                airWheelAudioSource.Stop();
+            }
+        }
     }
 
     private static bool CanWriteVelocity(Rigidbody body)
