@@ -567,6 +567,7 @@ MonoBehaviour:
   tricks:
   - {fileID: 11400000, guid: ba4c2d22414ff2748ae2d33c2b55767e, type: 2}
   - {fileID: 11400000, guid: e49d9f259bccb8e418ebc37d2c8e2094, type: 2}
+  - {fileID: 11400000, guid: 35b13ee3b4912fb47ba28aa44416bf03, type: 2}
   trickDirectionDeadzone: 0.5
   trickClearDuration: 2
   airTurnSuppressDuration: 0.12
