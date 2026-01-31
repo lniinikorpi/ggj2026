@@ -24,6 +24,7 @@ public class Tracker : MonoBehaviour
         // TODO: probably need checkpoints to actually make sure player drove the whole track
         if (LayerMask.LayerToName(other.gameObject.layer) == "Finish")
         {
+            gameData.lastLapTime = gameData.currentLapTime;
             Vector3 finishDirection = other.gameObject.transform.forward.normalized;
             Vector3 playerDirection = _rigidbody.linearVelocity.normalized;
             
@@ -31,7 +32,6 @@ public class Tracker : MonoBehaviour
             float dot = Vector3.Dot(finishDirection, playerDirection);
             if (dot > 0.5)
             {
-                
                 if (gameData.currentLapTime < gameData.bestLapTime || gameData.bestLapTime == 0)
                 {
                     Debug.Log("Fastest lap!");

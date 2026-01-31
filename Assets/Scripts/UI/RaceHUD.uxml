@@ -1,9 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
->
-    
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Label text="LAP" style="position: absolute; top: 16px; left: 16px; -unity-font-style: bold;"/>
+        <ui:Label text="Label" name="CurrentLapTime" style="position: relative; top: 32px; left: 0%; right: auto; bottom: auto; -unity-font-style: bold; font-size: 48px; -unity-text-align: lower-center;">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="LapTime" data-source="project://database/Assets/Scripts/GameDataSO.asset?fileID=11400000&amp;guid=7dbca43afead5774faa67c16672b9117&amp;type=2#GameDataSO" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+        <ui:Label text="Label" name="CurrentLap" style="font-size: 48px; position: absolute; -unity-font-style: bold; top: 32px; left: 32px;">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="LapString" data-source="project://database/Assets/Scripts/GameDataSO.asset?fileID=11400000&amp;guid=7dbca43afead5774faa67c16672b9117&amp;type=2#GameDataSO" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+        <ui:Label text="Label" parse-escape-sequences="false" style="font-size: 30px; right: 48px; -unity-text-align: upper-left; -unity-font-style: bold; position: absolute; top: 32px; height: 46px; width: 20%;">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="BestLap" data-source="project://database/Assets/Scripts/GameDataSO.asset?fileID=11400000&amp;guid=7dbca43afead5774faa67c16672b9117&amp;type=2#GameDataSO" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+        <ui:Label text="Label" parse-escape-sequences="false" style="font-size: 30px; right: 48px; -unity-text-align: upper-left; -unity-font-style: bold; position: absolute; top: 72px; width: 20%;">
+            <Bindings>
+                <ui:DataBinding property="text" data-source-path="LastLap" data-source="project://database/Assets/Scripts/GameDataSO.asset?fileID=11400000&amp;guid=7dbca43afead5774faa67c16672b9117&amp;type=2#GameDataSO" binding-mode="ToTarget"/>
+            </Bindings>
+        </ui:Label>
+    </ui:VisualElement>
 </ui:UXML>

@@ -18,7 +18,9 @@ public class GameDataSO : ScriptableObject
 
     [CreateProperty]
     private string LapTime =>
-        $"{Mathf.FloorToInt(currentLapTime % 60):00}:{Mathf.RoundToInt((currentLapTime % 1f) * 1000f):00}";
+        $"{Mathf.FloorToInt(currentLapTime % 60):00}:{Mathf.RoundToInt((currentLapTime % 1f) * 1000f):000}";
+    [CreateProperty] private string BestLap => $"Best {Mathf.FloorToInt(bestLapTime % 60):00}:{Mathf.RoundToInt((bestLapTime % 1f) * 1000f):000}";
+    [CreateProperty] private string LastLap => $"Last {Mathf.FloorToInt(lastLapTime % 60):00}:{Mathf.RoundToInt((lastLapTime % 1f) * 1000f):000}";
 
     public void ResetData()
     {
