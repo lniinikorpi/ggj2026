@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1269566374973714904}
   - component: {fileID: 1552034410844365539}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 5192007916061064600}
   - component: {fileID: 3447984297784102289}
   m_Layer: 5
-  m_Name: ScoreText
+  m_Name: Text_TrickScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -665,7 +665,7 @@ GameObject:
   - component: {fileID: 665670412649703194}
   - component: {fileID: 8065446088402467091}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_BestTime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -982,6 +982,7 @@ GameObject:
   - component: {fileID: 8001163868962494255}
   - component: {fileID: 1299332053807667205}
   - component: {fileID: 5266165778411999677}
+  - component: {fileID: 3966188104115643370}
   m_Layer: 5
   m_Name: Ingame UI
   m_TagString: Untagged
@@ -1075,6 +1076,25 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3966188104115643370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5187922184508622971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65447e2016928a34caaeafa902826096, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Updater
+  _totalScore: {fileID: 5904022816601498728}
+  _currentTrickScore: {fileID: 1596217251166910617}
+  _trickDescription: {fileID: 8763513975770667537}
+  _currentTime: {fileID: 381598361539676909}
+  _bestTime: {fileID: 3352805233110175405}
+  _lapInfo: {fileID: 7768239894855711070}
+  gameData: {fileID: 11400000, guid: 7dbca43afead5774faa67c16672b9117, type: 2}
 --- !u!1 &5562530497376186408
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,7 +1182,7 @@ GameObject:
   - component: {fileID: 3743358410178379926}
   - component: {fileID: 5046455746995090582}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1389,7 +1409,7 @@ GameObject:
   - component: {fileID: 7369269193210809430}
   - component: {fileID: 2102606890824896568}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Text_LAP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1601,7 +1621,7 @@ GameObject:
   - component: {fileID: 5631591355914624647}
   - component: {fileID: 3425387498848152373}
   m_Layer: 5
-  m_Name: Tricktext
+  m_Name: Text_Trick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1624,7 +1644,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -70.57}
-  m_SizeDelta: {x: 947.8, y: 50}
+  m_SizeDelta: {x: 1024, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5631591355914624647
 CanvasRenderer:
@@ -1698,7 +1718,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 1
+  m_TextWrappingMode: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

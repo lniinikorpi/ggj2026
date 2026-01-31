@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody ragdollBoardRigidbody;
     [SerializeField] private Collider ragdollBoardCollider;
 
+    [SerializeField] private GameDataSO gameData;
+    
     [Header("Movement Settings")]
     [SerializeField] private float acceleration = 20f;
     [SerializeField] private float maxSpeed = 10f;
@@ -56,7 +58,10 @@ public class PlayerController : MonoBehaviour
     
     [Header("Tricks")]
     [SerializeField] private List<TrickData> tricks;
-
+    [SerializeField, Range(0.1f, 1f)] private float trickDirectionDeadzone = 0.5f;
+    
+    [SerializeField] private float trickClearDuration = 2f;
+    
     [Header("Trick Movement Helpers")]
     [SerializeField, Range(0f, 0.5f)] private float airTurnSuppressDuration = 0.12f;
 
@@ -66,12 +71,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(1f, 3f)] private float landingTrickBoostMaxSpeedMultiplier = 1.5f;
     [SerializeField, Range(0f, 3f)] private float landingTrickBoostOverspeedDuration = 0.75f;
 
-    [SerializeField, Range(0.1f, 1f)] private float trickDirectionDeadzone = 0.5f;
+    
+ 
     [SerializeField] private int maxBufferedDirections = 8;
 
+    
+    
+    
     private float isTricking;
     private float wasTricking;
-
+    private float lastTrickTime;
+    private bool isTrickScorePending = false;
+    
     private bool wasGrounded;
     private bool trickLocked;
     private readonly List<Direction> bufferedDirections = new List<Direction>();
@@ -98,6 +109,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 cameraUpCurrent;
     private Vector3 cameraUpVelocity;
 
+   
+    
+    
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -163,6 +177,12 @@ public class PlayerController : MonoBehaviour
         }
 
         wasGrounded = grounded;
+
+        if (Time.time - lastTrickTime > trickClearDuration && isTrickScorePending)
+        {
+            gameData.CalculateTrickScore();
+            isTrickScorePending = false;
+        }
     }
 
     void FixedUpdate()
@@ -478,6 +498,10 @@ public class PlayerController : MonoBehaviour
     private void ExecuteTrick(TrickData trick)
     {
         if (trick == null) return;
+        
+        lastTrickTime = Time.time;
+        gameData.DoTrick(trick);
+        isTrickScorePending = true;
 
         trickLocked = true;
 

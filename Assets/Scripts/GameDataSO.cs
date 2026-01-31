@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
 
@@ -16,33 +17,41 @@ public class GameDataSO : ScriptableObject
     
     // Trick
     public int score;
-    public const float TrickBaseScore = 100;
+    public List<string> trickNames;
+    public int trickMultiplier = 1;
+    public float trickPointPool = 0;
+    private const float TrickBaseScore = 100;
     private string _lastTrickName = "none";
-    private int _trickMultiplier = 1;
-    private float _trickPointPool = 0;
     private int _consecutiveTricks = 1;
     
     public void DoTrick(TrickData trick)
     {
+        //Debug.Log($"DoTrick {trick.name}");
+        trickNames.Add(trick.name);
         // If new trick - increase multi
         if(trick.name != _lastTrickName)
         {
-            _trickMultiplier++;
-            _trickPointPool += TrickBaseScore;
+            trickMultiplier++;
+            trickPointPool += TrickBaseScore;
             _lastTrickName = trick.name;
             _consecutiveTricks = 1;
         }else
         {
             _consecutiveTricks++;
             // Reduce added base score if consecutive tricks
-            _trickPointPool += TrickBaseScore / _consecutiveTricks;
+            trickPointPool += TrickBaseScore / _consecutiveTricks;
             _lastTrickName = trick.name;
         }
     }
     // Calculate score after enough time elapsed after last trick
     public void CalculateTrickScore()
     {
-       score += Mathf.FloorToInt(_trickPointPool * _trickMultiplier);
+       score += Mathf.FloorToInt(trickPointPool * trickMultiplier);
+       trickNames.Clear();
+       trickPointPool = 0;
+       trickMultiplier = 1;
+       _consecutiveTricks = 1;
+       _lastTrickName = "none";
     }
     
     // String properties to get formatted string for UI
@@ -62,7 +71,8 @@ public class GameDataSO : ScriptableObject
         bestLapTime = 0;
         bestTotalTime = 0;
         lastLapTime = 0;
-        _trickMultiplier = 1;
-        _trickPointPool = 0;
+        trickMultiplier = 1;
+        trickPointPool = 0;
+        trickNames.Clear();
     }
 }

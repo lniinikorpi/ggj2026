@@ -7,7 +7,6 @@ using UnityEngine;
 public class HighScoreManager : MonoBehaviour
 {
     private const int MAX_SCORES = 10;
-    
     private HighScoreData data;
     
     public static HighScoreManager Instance { get; private set; }
@@ -31,11 +30,6 @@ public class HighScoreManager : MonoBehaviour
         data = SaveSystem.LoadGame().highScores;
         Debug.Log("Loaded high scores");
         Debug.Log(data);
-    }
-
-    public void UpdateHighScores()
-    {
-        SaveSystem.SaveGame(new SaveData(data));
     }
     
     private void SortScores() => data.highScores = data.highScores.OrderBy(e => e.score).ToList();
