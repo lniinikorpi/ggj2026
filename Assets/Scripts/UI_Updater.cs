@@ -57,7 +57,7 @@ public class UI_Updater : MonoBehaviour
                     break;
                 }
                 if(i > 0) trickDescription += " + ";
-                trickDescription += gameData.trickNames[i];
+                trickDescription += gameData.trickNames[i].ToString();
             }
             _trickDescriptionText.text = trickDescription;
         }

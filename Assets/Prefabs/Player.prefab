@@ -30,8 +30,6 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.47000015, y: 0.41000003, z: -1.2000003}
-  m_LocalRotation: {x: 0, y: -0.38268322, z: 0, w: 0.9238796}
-  m_LocalPosition: {x: 3.7628682, y: 3.8300002, z: 1.4468116}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -551,12 +549,14 @@ MonoBehaviour:
   tricks:
   - {fileID: 11400000, guid: ba4c2d22414ff2748ae2d33c2b55767e, type: 2}
   - {fileID: 11400000, guid: e49d9f259bccb8e418ebc37d2c8e2094, type: 2}
+  - {fileID: 11400000, guid: 35b13ee3b4912fb47ba28aa44416bf03, type: 2}
+  trickDirectionDeadzone: 0.5
+  trickClearDuration: 2
   airTurnSuppressDuration: 0.12
   landingTrickBoostImpulse: 3
   landingTrickBoostMinHorizontalSpeed: 0.25
   landingTrickBoostMaxSpeedMultiplier: 1.5
   landingTrickBoostOverspeedDuration: 0.75
-  trickDirectionDeadzone: 0.5
   maxBufferedDirections: 8
 --- !u!1 &5117792497070101789
 GameObject:

@@ -12,6 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 711ccf95acceaf64fac0af5141338a24, type: 3}
   m_Name: GameDataSO
   m_EditorClassIdentifier: Assembly-CSharp::GameDataSO
+  currentLap: 1
+  maxLap: 3
+  bestLapTime: 0
+  bestTotalTime: 0
+  totalTime: 0
+  lastLapTime: 0
+  currentTotalTime: 5.789852
+  currentLapTime: 5.789852
   score: 0
-  bestLap: 0
-  bestTime: 0
+  trickNames:
+  - KickFlip
+  trickMultiplier: 2
+  trickPointPool: 100
