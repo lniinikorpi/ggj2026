@@ -48,6 +48,15 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private string idleAnimationName = "Idle";
 
+    [Header("Trick Movement Helpers")]
+    [SerializeField, Range(0f, 0.5f)] private float airTurnSuppressDuration = 0.12f;
+
+    [Header("Landing Boost")]
+    [SerializeField] private float landingTrickBoostImpulse = 3.0f;
+    [SerializeField] private float landingTrickBoostMinHorizontalSpeed = 0.25f;
+    [SerializeField, Range(1f, 3f)] private float landingTrickBoostMaxSpeedMultiplier = 1.5f;
+    [SerializeField, Range(0f, 3f)] private float landingTrickBoostOverspeedDuration = 0.75f;
+
     [SerializeField, Range(0.1f, 1f)] private float trickDirectionDeadzone = 0.5f;
     [SerializeField] private int maxBufferedDirections = 8;
 
@@ -58,6 +67,10 @@ public class PlayerController : MonoBehaviour
     private bool trickLocked;
     private readonly List<Direction> bufferedDirections = new List<Direction>();
     private Direction? lastBufferedDirection;
+
+    private float suppressAirTurnUntil;
+    private bool landingBoostPending;
+    private float allowOverspeedUntil;
 
     private Rigidbody rb;
     private Vector2 playerInput;
@@ -102,6 +115,12 @@ public class PlayerController : MonoBehaviour
         bool grounded = IsGrounded();
         if (grounded && !wasGrounded)
         {
+            if (landingBoostPending)
+            {
+                ApplyLandingTrickBoost();
+                landingBoostPending = false;
+            }
+
             bufferedDirections.Clear();
             lastBufferedDirection = null;
         }
@@ -123,7 +142,6 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputValue value)
     {
         playerInput = value.Get<Vector2>();
-
         if (TryMapInputToDirection(playerInput, out Direction direction))
         {
             bool isNewDirection = !lastBufferedDirection.HasValue || lastBufferedDirection.Value != direction;
@@ -131,6 +149,12 @@ public class PlayerController : MonoBehaviour
             if (isNewDirection && !IsGrounded())
             {
                 BufferDirection(direction);
+
+                // Quick trick-direction taps (especially left/right) shouldn't accidentally rotate us mid-air.
+                if (airTurnSuppressDuration > 0f && (direction == Direction.Left || direction == Direction.Right))
+                {
+                    suppressAirTurnUntil = Time.time + airTurnSuppressDuration;
+                }
             }
 
             if (isNewDirection && isTricking > 0.5f)
@@ -195,7 +219,8 @@ public class PlayerController : MonoBehaviour
         float appliedAcceleration = grounded ? acceleration : (acceleration * airAccelerationMultiplier);
 
         // Update rotation (yaw) based on horizontal input
-        if (Mathf.Abs(playerInput.x) > 0.01f)
+        bool canTurnInAir = grounded || Time.time >= suppressAirTurnUntil;
+        if (Mathf.Abs(playerInput.x) > 0.01f && (grounded || canTurnInAir))
         {
             currentYaw += playerInput.x * appliedTurnSpeed * Time.fixedDeltaTime;
         }
@@ -219,9 +244,16 @@ public class PlayerController : MonoBehaviour
 
         // Clamp speed
         Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        if (horizontalVelocity.magnitude > maxSpeed)
+
+        float allowedMaxSpeed = maxSpeed;
+        if (Time.time < allowOverspeedUntil)
         {
-            horizontalVelocity = horizontalVelocity.normalized * maxSpeed;
+            allowedMaxSpeed = maxSpeed * Mathf.Max(1f, landingTrickBoostMaxSpeedMultiplier);
+        }
+
+        if (allowedMaxSpeed > 0.0001f && horizontalVelocity.magnitude > allowedMaxSpeed)
+        {
+            horizontalVelocity = horizontalVelocity.normalized * allowedMaxSpeed;
             rb.linearVelocity = new Vector3(horizontalVelocity.x, rb.linearVelocity.y, horizontalVelocity.z);
         }
     }
@@ -336,6 +368,11 @@ public class PlayerController : MonoBehaviour
 
         trickLocked = true;
 
+        if (!IsGrounded())
+        {
+            landingBoostPending = true;
+        }
+
         if (animator != null && !string.IsNullOrWhiteSpace(trick.trickName))
         {
             animator.Play(trick.trickName);
@@ -357,6 +394,31 @@ public class PlayerController : MonoBehaviour
         if (animator != null && !string.IsNullOrWhiteSpace(idleAnimationName))
         {
             //animator.Play(idleAnimationName);
+        }
+    }
+
+    private void ApplyLandingTrickBoost()
+    {
+        if (rb == null) return;
+        if (landingTrickBoostImpulse <= 0f) return;
+
+        Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+        Vector3 dir;
+
+        if (horizontalVelocity.magnitude >= landingTrickBoostMinHorizontalSpeed)
+        {
+            dir = horizontalVelocity.normalized;
+        }
+        else
+        {
+            dir = Quaternion.Euler(0f, currentYaw, 0f) * Vector3.forward;
+        }
+
+        rb.AddForce(dir * landingTrickBoostImpulse, ForceMode.Impulse);
+
+        if (landingTrickBoostOverspeedDuration > 0f && landingTrickBoostMaxSpeedMultiplier > 1f)
+        {
+            allowOverspeedUntil = Time.time + landingTrickBoostOverspeedDuration;
         }
     }
 

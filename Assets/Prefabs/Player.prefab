@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5599999, y: 0.41000003, z: -2.35}
+  m_LocalPosition: {x: 0, y: 0.65000004, z: -3.62}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -382,7 +382,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 
+  m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &6580768407276572112
@@ -402,8 +402,8 @@ MonoBehaviour:
   animator: {fileID: 7332026072355776800}
   acceleration: 20
   maxSpeed: 15
-  friction: 0.94
-  turnSpeed: 70
+  friction: 0.98
+  turnSpeed: 200
   rotationSpeed: 10
   raycastDistance: 1.2
   groundLayer:
@@ -427,6 +427,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 04e23af4bfea43d4b83208724b159a9d, type: 2}
   - {fileID: 11400000, guid: 73c389e1ceae2844aaad7edd99944d9d, type: 2}
   idleAnimationName: Idle
+  airTurnSuppressDuration: 0.12
+  landingTrickBoostImpulse: 3
+  landingTrickBoostMinHorizontalSpeed: 0.25
+  landingTrickBoostMaxSpeedMultiplier: 1.5
+  landingTrickBoostOverspeedDuration: 0.75
   trickDirectionDeadzone: 0.5
   maxBufferedDirections: 8
 --- !u!1 &5117792497070101789
