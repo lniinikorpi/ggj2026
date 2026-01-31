@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject playerMesh;
     [SerializeField] private Transform cameraTarget;
-    [SerializeField] private Animator animator;
+    [SerializeField] private List<Animator> animators;
     [SerializeField] private Animator boardAnimator;
 
     [Header("Ragdoll")]
@@ -197,7 +197,10 @@ public class PlayerController : MonoBehaviour
         }
 
         MovePlayer(grounded);
-        animator.SetFloat("Speed", rb.linearVelocity.magnitude);
+        foreach (var anim in animators)
+        {
+            anim.SetFloat("Speed", rb.linearVelocity.magnitude);
+        }
     }
 
     public void OnMove(InputValue value)
@@ -248,8 +251,11 @@ public class PlayerController : MonoBehaviour
         float val = value.Get<float>();
         if (val == 1.0f)
         {
-            animator.SetBool("Jump", false);
-            animator.SetBool("JumpStart", true);
+            foreach (var anim in animators)
+            {
+                anim.SetBool("Jump", false);
+                anim.SetBool("JumpStart", true);
+            }
             isJumpHold = true;
             currentJumpImpulse = 0f;
         }
@@ -264,8 +270,11 @@ public class PlayerController : MonoBehaviour
             float jumpImpulse = jumpImpulseMin + (jumpImpulseMax - jumpImpulseMin) * jumpMultiplier;
             rb.AddForce(Vector3.up * jumpImpulse, ForceMode.Impulse);
             lastJumpTime = Time.time;
-            animator.SetBool("Jump", true);
-            animator.SetBool("JumpStart", false);
+            foreach (var anim in animators)
+            {
+                anim.SetBool("Jump", true);
+                anim.SetBool("JumpStart", false);
+            }
             isJumpHold = false;
         }
     }
@@ -290,7 +299,14 @@ public class PlayerController : MonoBehaviour
         if (isRagdoll) return;
         isRagdoll = true;
 
-        if (animator != null) animator.enabled = false;
+        if (animators != null)
+        {
+            foreach (var anim in animators)
+            { 
+                anim.enabled = false;
+            }
+        }
+
         if (boardAnimator != null) boardAnimator.enabled = false;
 
         SetControllerEnabled(false);
@@ -511,9 +527,12 @@ public class PlayerController : MonoBehaviour
             landingBoostPending = true;
         }
 
-        if (animator != null && trick.clip != null)
+        if (animators != null && trick.clip != null)
         {
-            animator.Play(trick.clip.name);
+            foreach (var anim in animators)
+            {
+                anim.Play(trick.clip.name);
+            }
         }
         else
         {
