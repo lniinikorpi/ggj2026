@@ -10,8 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1811bede2974c1041be5304362dfb4b5, type: 3}
-  m_Name: Trick3
+  m_Name: KickFlip
   m_EditorClassIdentifier: Assembly-CSharp::TrickData
-  trickName: SpecialFlip
-  directions: 03000000
-  trickTime: 1
+  trickName: KickFlip
+  directions: 00000000
+  trickTime: 0.5
+  clip: {fileID: 0}
+  boardClip: {fileID: 7400000, guid: 76911fe703826ae45af40c652c834f03, type: 2}
