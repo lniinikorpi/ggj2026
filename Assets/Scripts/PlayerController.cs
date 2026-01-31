@@ -10,7 +10,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private Animator animator;
     [SerializeField] private Animator boardAnimator;
-    
+
+    [Header("Ragdoll")]
+    [SerializeField] private Rigidbody controllerPlayerRigidbody;
+    [SerializeField] private Collider controllerPlayerCollider;
+
+    [SerializeField] private Rigidbody ragdollPlayerRigidbody;
+    [SerializeField] private Collider ragdollPlayerCollider;
+    [SerializeField] private Rigidbody ragdollBoardRigidbody;
+    [SerializeField] private Collider ragdollBoardCollider;
+
     [Header("Movement Settings")]
     [SerializeField] private float acceleration = 20f;
     [SerializeField] private float maxSpeed = 10f;
@@ -78,6 +87,9 @@ public class PlayerController : MonoBehaviour
     private float lastJumpTime;
     private float currentTurnTilt;
 
+    private bool isRagdoll;
+    private Vector3 lastAirVelocity;
+
     private float cameraYaw;
     private float cameraPitchCurrent;
     private float cameraYawVelocity;
@@ -92,6 +104,10 @@ public class PlayerController : MonoBehaviour
         {
             rb = gameObject.AddComponent<Rigidbody>();
         }
+
+        // Default controller references to the main rigidbody/collider if not explicitly wired.
+        if (controllerPlayerRigidbody == null) controllerPlayerRigidbody = rb;
+        if (controllerPlayerCollider == null) controllerPlayerCollider = GetComponent<Collider>();
         
         // Ensure Rigidbody is configured for a skating feel
         rb.useGravity = true;
@@ -104,10 +120,15 @@ public class PlayerController : MonoBehaviour
         cameraYaw = currentYaw + cameraYawOffset;
         cameraPitchCurrent = cameraPitch;
         cameraUpCurrent = Vector3.up;
+
+        // Ensure ragdoll physics are disabled on start (they can be enabled on fall).
+        SetRagdollEnabled(false);
     }
 
     void Update()
     {
+        if (isRagdoll) return;
+
         UpdateMeshTransform();
         UpdateCameraTargetTransform();
         if (isJumpHold) HoldJump(Time.deltaTime);
@@ -115,6 +136,16 @@ public class PlayerController : MonoBehaviour
         bool grounded = IsGrounded();
         if (grounded && !wasGrounded)
         {
+            // Simplified falling rule:
+            // If we land while a trick is still in progress, we fall.
+            // (This replaces the old "bad landing" speed/angle based fall mechanic.)
+            if (trickLocked)
+            {
+                EnterRagdoll();
+                wasGrounded = grounded;
+                return;
+            }
+
             if (landingBoostPending)
             {
                 ApplyLandingTrickBoost();
@@ -135,7 +166,15 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isRagdoll) return;
+
         bool grounded = IsGrounded();
+
+        if (!grounded)
+        {
+            lastAirVelocity = rb.linearVelocity;
+        }
+
         MovePlayer(grounded);
     }
 
@@ -216,7 +255,69 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics.Raycast(transform.position, Vector3.down, raycastDistance, groundLayer);
+        return TryGetGroundHit(out _);
+    }
+
+    private bool TryGetGroundHit(out RaycastHit hit)
+    {
+        return Physics.Raycast(transform.position, Vector3.down, out hit, raycastDistance, groundLayer);
+    }
+
+    private void EnterRagdoll()
+    {
+        if (isRagdoll) return;
+        isRagdoll = true;
+
+        if (animator != null) animator.enabled = false;
+        if (boardAnimator != null) boardAnimator.enabled = false;
+
+        SetControllerEnabled(false);
+        SetRagdollEnabled(true);
+
+        // Give the ragdoll the incoming motion so the transition feels continuous.
+        if (ragdollPlayerRigidbody != null)
+        {
+            ragdollPlayerRigidbody.linearVelocity = lastAirVelocity;
+        }
+
+        if (ragdollBoardRigidbody != null)
+        {
+            ragdollBoardRigidbody.linearVelocity = lastAirVelocity;
+        }
+    }
+
+    private void SetControllerEnabled(bool enabled)
+    {
+        if (controllerPlayerCollider != null) controllerPlayerCollider.enabled = enabled;
+        if (controllerPlayerRigidbody != null)
+        {
+            controllerPlayerRigidbody.isKinematic = !enabled;
+            controllerPlayerRigidbody.detectCollisions = enabled;
+            if (!enabled)
+            {
+                controllerPlayerRigidbody.linearVelocity = Vector3.zero;
+                controllerPlayerRigidbody.angularVelocity = Vector3.zero;
+            }
+        }
+    }
+
+    private void SetRagdollEnabled(bool enabled)
+    {
+        if (ragdollPlayerCollider != null) ragdollPlayerCollider.enabled = enabled;
+        if (ragdollPlayerRigidbody != null)
+        {
+            ragdollPlayerRigidbody.isKinematic = !enabled;
+            ragdollPlayerRigidbody.detectCollisions = enabled;
+            ragdollPlayerRigidbody.useGravity = enabled;
+        }
+
+        if (ragdollBoardCollider != null) ragdollBoardCollider.enabled = enabled;
+        if (ragdollBoardRigidbody != null)
+        {
+            ragdollBoardRigidbody.isKinematic = !enabled;
+            ragdollBoardRigidbody.detectCollisions = enabled;
+            ragdollBoardRigidbody.useGravity = enabled;
+        }
     }
 
     private void MovePlayer(bool grounded)
