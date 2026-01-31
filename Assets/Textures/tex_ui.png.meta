@@ -6,7 +6,7 @@ TextureImporter:
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -37,13 +37,13 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 0
-    wrapV: 0
+    wrapU: 1
+    wrapV: 1
     wrapW: 0
-  nPOTScale: 1
+  nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 0
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -52,9 +52,9 @@ TextureImporter:
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
-  alphaIsTransparency: 0
+  alphaIsTransparency: 1
   spriteTessellationDetail: -1
-  textureType: 0
+  textureType: 8
   textureShape: 1
   singleChannelComponent: 0
   flipbookRows: 1
@@ -95,12 +95,232 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: tex_ui_button_round
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 1575
+        width: 421
+        height: 435
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 9, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1302dc64a2d0ac048a5f8f7852182d8f
+      internalID: -185768638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_icon_play
+      rect:
+        serializedVersion: 2
+        x: 1214
+        y: 1642
+        width: 297
+        height: 282
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e92dd7ed7941ea840a27bbdb078f6b73
+      internalID: -1644870999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_icon_reply
+      rect:
+        serializedVersion: 2
+        x: 875
+        y: 1636
+        width: 300
+        height: 291
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5ef79f74019bc3439f588b70b86d82d
+      internalID: 607705733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_icon_pause
+      rect:
+        serializedVersion: 2
+        x: 539
+        y: 1652
+        width: 204
+        height: 278
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4ca675da6aa7af0429168c07a565acf8
+      internalID: -991513086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_button_square
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 1108
+        width: 1087
+        height: 317
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e88f84128cf86a40a648369766a3dee
+      internalID: 1258347711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_icon_menu
+      rect:
+        serializedVersion: 2
+        x: 1586
+        y: 1638
+        width: 347
+        height: 289
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 140106d5138fa4c47b29c8fcd839e450
+      internalID: -2140603086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_icon_x
+      rect:
+        serializedVersion: 2
+        x: 1586
+        y: 1286
+        width: 365
+        height: 303
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a69d2873d16870f4d8fbb480e6c3ed5a
+      internalID: -1042725112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_7
+      rect:
+        serializedVersion: 2
+        x: 1482
+        y: 829
+        width: 393
+        height: 365
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29793f4fe71c78b42919d3a8d1733742
+      internalID: -1525088893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_big_square
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 39
+        width: 1183
+        height: 1020
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 36901651400f9e74e84c9717b1e855bc
+      internalID: 1496480014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tex_ui_time
+      rect:
+        serializedVersion: 2
+        x: 1423
+        y: 70
+        width: 479
+        height: 583
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1964898f57fbc04f976d91b5c6bd03a
+      internalID: -1429152467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5390f11223f2ae741a4ab330761d3670
     internalID: 0
     vertices: []
     indices: 
@@ -109,7 +329,17 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      tex_ui_7: -1525088893
+      tex_ui_big_square: 1496480014
+      tex_ui_button_round: -185768638
+      tex_ui_button_square: 1258347711
+      tex_ui_icon_menu: -2140603086
+      tex_ui_icon_pause: -991513086
+      tex_ui_icon_play: -1644870999
+      tex_ui_icon_reply: 607705733
+      tex_ui_icon_x: -1042725112
+      tex_ui_time: -1429152467
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
