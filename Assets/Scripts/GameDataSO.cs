@@ -34,8 +34,8 @@ public class GameDataSO : ScriptableObject
         }else
         {
             _consecutiveTricks++;
-            // Reduce base score if consecutive tricks
-            _trickPointPool = TrickBaseScore / _consecutiveTricks;
+            // Reduce added base score if consecutive tricks
+            _trickPointPool += TrickBaseScore / _consecutiveTricks;
             _lastTrickName = trick.name;
         }
     }
