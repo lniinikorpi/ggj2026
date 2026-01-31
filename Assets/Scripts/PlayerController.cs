@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private List<Animator> animators;
     [SerializeField] private Animator boardAnimator;
+    [SerializeField] private CanvasGroup fadeCanvas;
 
     [Header("Customization")]
     [SerializeField] private List<SkinnedMeshRenderer> maskRenderers;
@@ -28,6 +29,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Collider ragdollMask1Collider;
     [SerializeField] private Rigidbody ragdollMask2Rigidbody;
     [SerializeField] private Collider ragdollMask2Collider;
+
+    [Header("Respawn")]
+    [SerializeField] private float ragdollRespawnDelay = 2f;
+
+    [SerializeField, Range(0.01f, 1f)] private float respawnFadeInDuration = 0.08f;
+    [SerializeField, Range(0.01f, 2f)] private float respawnFadeOutDuration = 0.25f;
 
     [SerializeField] private GameDataSO gameData;
     
@@ -110,12 +117,31 @@ public class PlayerController : MonoBehaviour
     private bool isRagdoll;
     private Vector3 lastAirVelocity;
 
+    private Vector3 startSpawnPosition;
+    private Quaternion startSpawnRotation;
+    private Vector3 currentRespawnPosition;
+    private Quaternion currentRespawnRotation;
+
+    private Vector3 ragdollPlayerOffset;
+    private Quaternion ragdollPlayerRotOffset;
+    private Vector3 ragdollBoardOffset;
+    private Quaternion ragdollBoardRotOffset;
+    private Vector3 ragdollMask1Offset;
+    private Quaternion ragdollMask1RotOffset;
+    private Vector3 ragdollMask2Offset;
+    private Quaternion ragdollMask2RotOffset;
+
+    private Coroutine respawnRoutine;
+    private Coroutine fadeRoutine;
+
     private float cameraYaw;
     private float cameraPitchCurrent;
     private float cameraYawVelocity;
     private float cameraPitchVelocity;
     private Vector3 cameraUpCurrent;
     private Vector3 cameraUpVelocity;
+
+    private Tracker tracker;
 
    
     
@@ -139,6 +165,16 @@ public class PlayerController : MonoBehaviour
         // Initialize yaw based on current rotation
         currentYaw = transform.eulerAngles.y;
 
+        // Cache initial spawn and default respawn point.
+        startSpawnPosition = transform.position;
+        startSpawnRotation = transform.rotation;
+        currentRespawnPosition = startSpawnPosition;
+        currentRespawnRotation = startSpawnRotation;
+
+        tracker = GetComponent<Tracker>();
+
+        CacheRagdollOffsets();
+
         // Initialize camera target smoothing to current values to avoid a startup snap.
         cameraYaw = currentYaw + cameraYawOffset;
         cameraPitchCurrent = cameraPitch;
@@ -146,6 +182,34 @@ public class PlayerController : MonoBehaviour
 
         // Ensure ragdoll physics are disabled on start (they can be enabled on fall).
         SetRagdollEnabled(false);
+    }
+
+    private void CacheRagdollOffsets()
+    {
+        if (ragdollPlayerRigidbody != null)
+        {
+            // Cache in controller-local space so we can reapply correctly after respawn rotations.
+            ragdollPlayerOffset = ragdollPlayerRigidbody.transform.localPosition;
+            ragdollPlayerRotOffset = ragdollPlayerRigidbody.transform.localRotation;
+        }
+
+        if (ragdollBoardRigidbody != null)
+        {
+            ragdollBoardOffset = ragdollBoardRigidbody.transform.localPosition;
+            ragdollBoardRotOffset = ragdollBoardRigidbody.transform.localRotation;
+        }
+
+        if (ragdollMask1Rigidbody != null)
+        {
+            ragdollMask1Offset = ragdollMask1Rigidbody.transform.localPosition;
+            ragdollMask1RotOffset = ragdollMask1Rigidbody.transform.localRotation;
+        }
+
+        if (ragdollMask2Rigidbody != null)
+        {
+            ragdollMask2Offset = ragdollMask2Rigidbody.transform.localPosition;
+            ragdollMask2RotOffset = ragdollMask2Rigidbody.transform.localRotation;
+        }
     }
 
     private void Start()
@@ -365,6 +429,193 @@ public class PlayerController : MonoBehaviour
         if (ragdollMask2Rigidbody != null)
         {
             ragdollMask2Rigidbody.linearVelocity = lastAirVelocity;
+        }
+
+        if (respawnRoutine != null)
+        {
+            StopCoroutine(respawnRoutine);
+        }
+
+        if (fadeRoutine != null)
+        {
+            StopCoroutine(fadeRoutine);
+            fadeRoutine = null;
+        }
+        respawnRoutine = StartCoroutine(RespawnAfterDelay());
+    }
+
+    private System.Collections.IEnumerator RespawnAfterDelay()
+    {
+        yield return new WaitForSeconds(ragdollRespawnDelay);
+
+        // Fade only if a CanvasGroup has been assigned.
+        if (fadeCanvas != null)
+        {
+            if (fadeRoutine != null)
+            {
+                StopCoroutine(fadeRoutine);
+            }
+            fadeRoutine = StartCoroutine(RespawnFadeSequence());
+        }
+        else
+        {
+            Respawn();
+        }
+
+        respawnRoutine = null;
+    }
+
+    private System.Collections.IEnumerator RespawnFadeSequence()
+    {
+        yield return FadeCanvasAlphaTo(1f, respawnFadeInDuration);
+        Respawn();
+        yield return new WaitForSeconds(.5f);
+        yield return FadeCanvasAlphaTo(0f, respawnFadeOutDuration);
+        fadeRoutine = null;
+    }
+
+    private System.Collections.IEnumerator FadeCanvasAlphaTo(float targetAlpha, float duration)
+    {
+        if (fadeCanvas == null) yield break;
+
+        float startAlpha = fadeCanvas.alpha;
+        if (duration <= 0f)
+        {
+            fadeCanvas.alpha = targetAlpha;
+            yield break;
+        }
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float lerpT = Mathf.Clamp01(t / duration);
+            fadeCanvas.alpha = Mathf.Lerp(startAlpha, targetAlpha, lerpT);
+            yield return null;
+        }
+        fadeCanvas.alpha = targetAlpha;
+    }
+
+    public void Respawn()
+    {
+        // If we are not ragdolled, still allow a hard reset back to the last respawn point.
+        // (Useful for debugging or external calls.)
+
+        // Disable ragdoll first so we can safely teleport without physics fighting us.
+        SetRagdollEnabled(false);
+        SetControllerEnabled(true);
+
+        isRagdoll = false;
+
+        // Reset core motion/state so controller behaves consistently after teleport.
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        lastAirVelocity = Vector3.zero;
+        isJumpHold = false;
+        currentJumpImpulse = 0f;
+        trickLocked = false;
+        isTricking = 0f;
+        wasTricking = 0f;
+        lastTrickTime = 0f;
+        isTrickScorePending = false;
+        bufferedDirections.Clear();
+        lastBufferedDirection = null;
+        landingBoostPending = false;
+        allowOverspeedUntil = 0f;
+        suppressAirTurnUntil = 0f;
+
+        // Pull the respawn point from the Tracker (single source of truth).
+        if (tracker != null && tracker.TryGetLastCheckpointPose(out Vector3 checkpointPos, out Quaternion checkpointRot))
+        {
+            currentRespawnPosition = checkpointPos;
+            currentRespawnRotation = checkpointRot;
+        }
+        else
+        {
+            currentRespawnPosition = startSpawnPosition;
+            currentRespawnRotation = startSpawnRotation;
+        }
+
+        // Teleport controller.
+        // IMPORTANT: this object is driven by a non-kinematic Rigidbody, so setting only the Transform
+        // can be overwritten by the physics step (snapping back to the pre-teleport Rigidbody pose).
+        // Set the Rigidbody pose directly to make the teleport stick.
+        Rigidbody controllerBody = controllerPlayerRigidbody != null ? controllerPlayerRigidbody : rb;
+        if (controllerBody != null)
+        {
+            controllerBody.linearVelocity = Vector3.zero;
+            controllerBody.angularVelocity = Vector3.zero;
+            controllerBody.position = currentRespawnPosition;
+            controllerBody.rotation = currentRespawnRotation;
+            controllerBody.Sleep();
+        }
+        transform.SetPositionAndRotation(currentRespawnPosition, currentRespawnRotation);
+        Physics.SyncTransforms();
+        currentYaw = currentRespawnRotation.eulerAngles.y;
+
+        // Reset camera smoothing so we don't snap/spin after teleport.
+        cameraYaw = currentYaw + cameraYawOffset;
+        cameraPitchCurrent = cameraPitch;
+        cameraYawVelocity = 0f;
+        cameraPitchVelocity = 0f;
+        cameraUpCurrent = Vector3.up;
+        cameraUpVelocity = Vector3.zero;
+
+        // Re-enable animators.
+        if (animators != null)
+        {
+            foreach (var anim in animators)
+            {
+                if (anim == null) continue;
+                anim.enabled = true;
+                anim.SetBool("Jump", false);
+                anim.SetBool("JumpStart", false);
+            }
+        }
+
+        if (boardAnimator != null)
+        {
+            boardAnimator.enabled = true;
+            boardAnimator.SetBool("Jump", false);
+            boardAnimator.SetBool("JumpStart", false);
+        }
+
+        // Keep ragdoll parts with the player so we don't leave pieces behind in the scene.
+        ResetRagdollTransformsToRespawn();
+    }
+
+    private void ResetRagdollTransformsToRespawn()
+    {
+        if (ragdollPlayerRigidbody != null)
+        {
+            ragdollPlayerRigidbody.transform.SetLocalPositionAndRotation(ragdollPlayerOffset, ragdollPlayerRotOffset);
+            ragdollPlayerRigidbody.linearVelocity = Vector3.zero;
+            ragdollPlayerRigidbody.angularVelocity = Vector3.zero;
+        }
+
+        if (ragdollBoardRigidbody != null)
+        {
+            ragdollBoardRigidbody.transform.SetLocalPositionAndRotation(ragdollBoardOffset, ragdollBoardRotOffset);
+            ragdollBoardRigidbody.linearVelocity = Vector3.zero;
+            ragdollBoardRigidbody.angularVelocity = Vector3.zero;
+        }
+
+        if (ragdollMask1Rigidbody != null)
+        {
+            ragdollMask1Rigidbody.transform.SetLocalPositionAndRotation(ragdollMask1Offset, ragdollMask1RotOffset);
+            ragdollMask1Rigidbody.linearVelocity = Vector3.zero;
+            ragdollMask1Rigidbody.angularVelocity = Vector3.zero;
+        }
+
+        if (ragdollMask2Rigidbody != null)
+        {
+            ragdollMask2Rigidbody.transform.SetLocalPositionAndRotation(ragdollMask2Offset, ragdollMask2RotOffset);
+            ragdollMask2Rigidbody.linearVelocity = Vector3.zero;
+            ragdollMask2Rigidbody.angularVelocity = Vector3.zero;
         }
     }
 
