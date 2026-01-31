@@ -1,8 +1,6 @@
 using System.IO;
 using UnityEngine;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 public static class SaveSystem
 {
@@ -33,13 +31,22 @@ public class SaveData
 {
     public HighScoreData highScores;
 
+    // Customization
+    public int selectedMaskIndex;
+    public int selectedMaskMaterialIndex;
+
     public SaveData()
     {
         highScores = new HighScoreData(true);
+        selectedMaskIndex = 0;
+        selectedMaskMaterialIndex = 0;
     }
     
-    public SaveData(HighScoreData data) {
+    public SaveData(HighScoreData data)
+    {
         highScores = data;
+        selectedMaskIndex = 0;
+        selectedMaskMaterialIndex = 0;
     }
 }
 
