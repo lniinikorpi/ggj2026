@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
     private Vector2 playerInput;
+    private float throttle;
     private float currentYaw;
     private float lastJumpTime;
     private float currentTurnTilt;
@@ -172,6 +173,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnThrottle(InputValue value)
+    {
+        float val = value.Get<float>();
+        throttle = val;
+    }
+
     public void OnJump(InputValue value)
     {
         if (Time.time < lastJumpTime + jumpCooldown) return;
@@ -227,10 +234,10 @@ public class PlayerController : MonoBehaviour
         // Calculate forward direction based on current yaw
         Vector3 forwardDirection = Quaternion.Euler(0, currentYaw, 0) * Vector3.forward;
         
-        if (Mathf.Abs(playerInput.y) > 0.1f)
+        if (Mathf.Abs(throttle) > 0.1f)
         {
             // Apply acceleration in the forward direction based on vertical input
-            rb.AddForce(forwardDirection * (playerInput.y * appliedAcceleration), ForceMode.Acceleration);
+            rb.AddForce(forwardDirection * (throttle * appliedAcceleration), ForceMode.Acceleration);
         }
         else if (grounded)
         {
