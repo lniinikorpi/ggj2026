@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.000000016735148, y: 0.000000059604638, z: 0.0000000034968464, w: 1}
-  m_LocalPosition: {x: 0.5599999, y: 0.41000003, z: -2.35}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.65000004, z: -3.6200001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -281,7 +281,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8960715529981014189}
-  - component: {fileID: 6067754174169981338}
+  - component: {fileID: 755094166401694991}
   m_Layer: 0
   m_Name: DogParent
   m_TagString: Untagged
@@ -303,9 +303,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1073138424413216953}
+  - {fileID: 2024607686020809623}
   m_Father: {fileID: 9223311644613849328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &6067754174169981338
+--- !u!95 &755094166401694991
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -315,7 +316,7 @@ Animator:
   m_GameObject: {fileID: 3405685918614932954}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 1e70d41d842c7ea438c89b4171e7497d, type: 2}
+  m_Controller: {fileID: 9100000, guid: cd56da07327ad4b4cafbffa4ea086f6f, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -455,6 +456,7 @@ MonoBehaviour:
   playerMesh: {fileID: 6179131447830100879}
   cameraTarget: {fileID: 7957603284590517367}
   animator: {fileID: 5120313040168794670}
+  boardAnimator: {fileID: 755094166401694991}
   acceleration: 20
   maxSpeed: 15
   friction: 0.98
@@ -479,8 +481,8 @@ MonoBehaviour:
   cameraPitchSmoothTime: 0.7
   cameraUpSmoothTime: 0.7
   tricks:
-  - {fileID: 11400000, guid: 04e23af4bfea43d4b83208724b159a9d, type: 2}
-  - {fileID: 11400000, guid: 73c389e1ceae2844aaad7edd99944d9d, type: 2}
+  - {fileID: 11400000, guid: ba4c2d22414ff2748ae2d33c2b55767e, type: 2}
+  - {fileID: 11400000, guid: e49d9f259bccb8e418ebc37d2c8e2094, type: 2}
   airTurnSuppressDuration: 0.12
   landingTrickBoostImpulse: 3
   landingTrickBoostMinHorizontalSpeed: 0.25
@@ -549,7 +551,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8960715529981014189}
-  - {fileID: 4096695264140514059}
   m_Father: {fileID: 4721617791097677619}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7216663882526173552
@@ -587,38 +588,6 @@ Transform:
   - {fileID: 4837712328838763615}
   - {fileID: 7117779798623863246}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7646519375931595787
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4096695264140514059}
-  m_Layer: 0
-  m_Name: SkateboardParent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4096695264140514059
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7646519375931595787}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2024607686020809623}
-  m_Father: {fileID: 9223311644613849328}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &679538642062247762
 PrefabInstance:
@@ -680,6 +649,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -4681939094788659230, guid: 7eaeab7f39fc12444ac052863bedb200, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7eaeab7f39fc12444ac052863bedb200, type: 3}
       propertyPath: m_Name
       value: SK_Doggo_Single_V2
@@ -730,19 +703,19 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 4096695264140514059}
+    m_TransformParent: {fileID: 8960715529981014189}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.39012
+      value: 0.39012012
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.39012
+      value: 0.39011997
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.39012
+      value: 0.3901201
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -762,7 +735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalRotation.y
@@ -770,7 +743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ed785419cac8bda4eba6f8fdbaa4240d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

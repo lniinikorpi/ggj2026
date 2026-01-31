@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject playerMesh;
     [SerializeField] private Transform cameraTarget;
     [SerializeField] private Animator animator;
+    [SerializeField] private Animator boardAnimator;
     
     [Header("Movement Settings")]
     [SerializeField] private float acceleration = 20f;
@@ -371,13 +372,18 @@ public class PlayerController : MonoBehaviour
             landingBoostPending = true;
         }
 
-        if (animator != null && !string.IsNullOrWhiteSpace(trick.trickName))
+        if (animator != null && trick.clip != null)
         {
             animator.Play(trick.clip.name);
         }
         else
         {
-            Debug.LogWarning($"Trick '{(trick != null ? trick.trickName : "<null>")}' could not be played (missing Animator or trickName).", this);
+            //Debug.LogWarning($"Trick '{(trick != null ? trick.trickName : "<null>")}' could not be played (missing Animator or trickName).", this);
+        }
+
+        if (boardAnimator != null && trick.boardClip != null)
+        {
+            boardAnimator.Play(trick.boardClip.name);
         }
 
         float duration = Mathf.Max(0.01f, trick.trickTime);

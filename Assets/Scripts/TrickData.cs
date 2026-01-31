@@ -13,4 +13,5 @@ public class TrickData : ScriptableObject
     public List<Direction> directions;
     public float trickTime;
     public AnimationClip clip;
+    public AnimationClip boardClip;
 }
