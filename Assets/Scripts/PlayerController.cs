@@ -12,6 +12,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private List<Animator> animators;
     [SerializeField] private Animator boardAnimator;
 
+    [Header("Customization")]
+    [SerializeField] private List<SkinnedMeshRenderer> maskRenderers;
+    [SerializeField] private List<Material> maskMaterials;
+
     [Header("Ragdoll")]
     [SerializeField] private Rigidbody controllerPlayerRigidbody;
     [SerializeField] private Collider controllerPlayerCollider;
@@ -138,6 +142,34 @@ public class PlayerController : MonoBehaviour
 
         // Ensure ragdoll physics are disabled on start (they can be enabled on fall).
         SetRagdollEnabled(false);
+    }
+
+    private void Start()
+    {
+        ApplySavedCustomization();
+    }
+
+    private void ApplySavedCustomization()
+    {
+        if (maskRenderers == null || maskRenderers.Count == 0) return;
+
+        SaveData save = SaveSystem.LoadGame();
+
+        int selectedMask = Mathf.Clamp(save.selectedMaskIndex, 0, maskRenderers.Count - 1);
+        for (int i = 0; i < maskRenderers.Count; i++)
+        {
+            if (maskRenderers[i] != null)
+                maskRenderers[i].gameObject.SetActive(i == selectedMask);
+        }
+
+        if (maskMaterials == null || maskMaterials.Count == 0) return;
+
+        int selectedMaterial = Mathf.Clamp(save.selectedMaskMaterialIndex, 0, maskMaterials.Count - 1);
+        Material mat = maskMaterials[selectedMaterial];
+        if (mat != null && maskRenderers[selectedMask] != null)
+        {
+            maskRenderers[selectedMask].material = mat;
+        }
     }
 
     void Update()

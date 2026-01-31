@@ -6,6 +6,7 @@ public class CustomizeUIButton : MonoBehaviour
     [SerializeField] private Material material;
     [SerializeField] private CustomizeUIController controller;
     [SerializeField] private int maskIndex;
+    [SerializeField] private int materialIndex;
     private Button button;
 
     private void Awake()
@@ -26,5 +27,10 @@ public class CustomizeUIButton : MonoBehaviour
             }
             controller.maskRenderers[i].gameObject.SetActive(false);
         }
+
+        SaveData save = SaveSystem.LoadGame();
+        save.selectedMaskIndex = maskIndex;
+        save.selectedMaskMaterialIndex = materialIndex;
+        SaveSystem.SaveGame(save);
     }
 }
