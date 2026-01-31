@@ -982,7 +982,7 @@ GameObject:
   - component: {fileID: 8001163868962494255}
   - component: {fileID: 1299332053807667205}
   - component: {fileID: 5266165778411999677}
-  - component: {fileID: 3966188104115643370}
+  - component: {fileID: 299425046807433479}
   m_Layer: 5
   m_Name: Ingame UI
   m_TagString: Untagged
@@ -1077,7 +1077,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &3966188104115643370
+--- !u!114 &299425046807433479
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1086,7 +1086,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5187922184508622971}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48098c200bb8f894aaa4ba38fb84c65d, type: 3}
+  m_Script: {fileID: 11500000, guid: 344133f8178138045abac796c77b0690, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Updater
   _totalScore: {fileID: 5904022816601498728}
