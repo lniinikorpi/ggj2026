@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CanvasGroup fadeCanvas;
     [SerializeField] private RandomBailText randomBailText;
     [SerializeField] private AudioSource boardAudioSource;
+    [SerializeField] private AudioSource jumpAudioSource;
+    [SerializeField] private AudioSource landAudioSource;
 
     [Header("Board Audio")]
     [SerializeField, Range(0f, 1f)] private float boardAudioMaxVolume = 1f;
@@ -262,6 +264,11 @@ public class PlayerController : MonoBehaviour
         bool grounded = IsGrounded();
         if (grounded && !wasGrounded)
         {
+            if (landAudioSource != null)
+            {
+                landAudioSource.Play();
+            }
+
             // Simplified falling rule:
             // If we land while a trick is still in progress, we fall.
             // (This replaces the old "bad landing" speed/angle based fall mechanic.)
@@ -431,6 +438,10 @@ public class PlayerController : MonoBehaviour
             // Make jumps consistent regardless of current vertical motion.
             Vector3 velocity = rb.linearVelocity;
             velocity.y = 0f;
+            if (jumpAudioSource != null)
+            {
+                jumpAudioSource.Play();
+            }
             rb.linearVelocity = velocity;
 
             float jumpMultiplier = currentJumpImpulse / jumpImpulseHoldMax;
