@@ -28,13 +28,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
-<<<<<<< Updated upstream
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.47000015, y: 0.41000003, z: -1.2000003}
-=======
   m_LocalRotation: {x: 0, y: -0.38268322, z: 0, w: 0.9238796}
   m_LocalPosition: {x: 3.7628682, y: 3.8300002, z: 1.4468116}
->>>>>>> Stashed changes
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -521,16 +518,13 @@ MonoBehaviour:
   cameraTarget: {fileID: 7957603284590517367}
   animator: {fileID: 5120313040168794670}
   boardAnimator: {fileID: 755094166401694991}
-<<<<<<< Updated upstream
   controllerPlayerRigidbody: {fileID: 0}
   controllerPlayerCollider: {fileID: 0}
   ragdollPlayerRigidbody: {fileID: 0}
   ragdollPlayerCollider: {fileID: 0}
   ragdollBoardRigidbody: {fileID: 0}
   ragdollBoardCollider: {fileID: 0}
-=======
   gameData: {fileID: 11400000, guid: 7dbca43afead5774faa67c16672b9117, type: 2}
->>>>>>> Stashed changes
   acceleration: 20
   maxSpeed: 15
   friction: 0.98
