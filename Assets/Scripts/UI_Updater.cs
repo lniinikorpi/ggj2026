@@ -43,12 +43,24 @@ public class UI_Updater : MonoBehaviour
         _trickDescriptionText.text = "";
         _currentTrickScoreText.text = "";
         gameData.ResetData();
-        if (HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestScore(out float bestScore))
-            _bestTimeText.text = $"BEST TIME:{FormatTime(bestScore)}";
+
+        if (HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestPlayerScore(out float playerBestScore))
+        {
+            _bestTimeText.text = $"BEST TIME:{FormatTime(playerBestScore)}";
+        }
+        else if (HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetWorstBaselineScore(out float worstBaselineScore))
+        {
+            // No player time yet: show the worst (highest) baseline time by default.
+            _bestTimeText.text = $"BEST TIME:{FormatTime(worstBaselineScore)}";
+        }
         else if (gameData.bestTotalTime > 0)
+        {
             _bestTimeText.text = $"BEST TIME:{FormatTime(gameData.bestTotalTime)}";
+        }
         else
+        {
             _bestTimeText.text = "BEST TIME:--:---";
+        }
         
         restartButton.onClick.AddListener(() =>
         {
@@ -98,27 +110,25 @@ public class UI_Updater : MonoBehaviour
 
     private string BuildEndPanelHighScoreText()
     {
-        // 8 hardcoded baseline times (in seconds) for the default lap count.
-        // These are display-only and are scaled based on the current max lap amount.
+        // Hardcoded baseline times (in seconds).
         float[] baselineTimesSeconds =
         {
-            55f,
-            65f,
-            75f,
-            85f,
-            95f,
-            105f,
-            112f,
-            120f
+            165f,
+            195f,
+            225f,
+            255f,
+            285f,
+            315f,
+            336f,
+            360f,
+            390f,
+            420f
         };
-
-        int maxLap = Mathf.Max(1, gameData != null ? gameData.maxLap : 1);
 
         var entries = new System.Collections.Generic.List<(string name, float timeSeconds, bool isPlayer)>();
         for (int i = 0; i < baselineTimesSeconds.Length; i++)
         {
-            float scaled = baselineTimesSeconds[i] * maxLap;
-            entries.Add(($"TIME {i + 1}", scaled, false));
+            entries.Add(($"TIME {i + 1}", baselineTimesSeconds[i], false));
         }
 
         float currentRunTime = 0f;
@@ -128,7 +138,7 @@ public class UI_Updater : MonoBehaviour
         }
 
         float savedBest = 0f;
-        bool hasSavedBest = HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestScore(out savedBest);
+        bool hasSavedBest = HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestPlayerScore(out savedBest);
 
         float playerBest = 0f;
         if (hasSavedBest && savedBest > 0f)

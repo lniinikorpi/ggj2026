@@ -47,7 +47,8 @@ public class SaveData
         highScores = new HighScoreData(true);
         selectedMaskIndex = 0;
         selectedMaskMaterialIndex = 0;
-        playerLeaderboardIndex = 0;
+        // -1 means the player has not recorded a run / placement yet.
+        playerLeaderboardIndex = -1;
         tutorialCompleted = false;
     }
     
@@ -56,7 +57,8 @@ public class SaveData
         highScores = data;
         selectedMaskIndex = 0;
         selectedMaskMaterialIndex = 0;
-        playerLeaderboardIndex = 0;
+        // -1 means the player has not recorded a run / placement yet.
+        playerLeaderboardIndex = -1;
         tutorialCompleted = false;
     }
 }
