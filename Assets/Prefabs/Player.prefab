@@ -662,6 +662,7 @@ GameObject:
   - component: {fileID: 1447558440782439719}
   - component: {fileID: 6796321309521514639}
   - component: {fileID: 6580768407276572112}
+  - component: {fileID: 4546613063396069656}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: Untagged
@@ -790,6 +791,8 @@ MonoBehaviour:
   boardAudioMaxVolume: 1
   boardAudioMinPitch: 0.85
   boardAudioMaxPitch: 1.25
+  currentBoardVol: 0
+  currentAirVol: 0
   maskRenderers:
   - {fileID: 4158001368328331628}
   - {fileID: 5412545225995478499}
@@ -852,6 +855,31 @@ MonoBehaviour:
   landingTrickBoostMaxSpeedMultiplier: 1.5
   landingTrickBoostOverspeedDuration: 0.75
   maxBufferedDirections: 8
+--- !u!114 &4546613063396069656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3643795757613708644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c36be39fff2669c45b15f4190fe48384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tracker
+  gameData: {fileID: 11400000, guid: 7dbca43afead5774faa67c16672b9117, type: 2}
+  requiredCheckpoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  debugLogCheckpointUpdates: 0
 --- !u!1 &4098175318716346858
 GameObject:
   m_ObjectHideFlags: 0

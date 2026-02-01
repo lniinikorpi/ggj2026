@@ -10156,7 +10156,15 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     Prefab: {fileID: 5224240038758998689, guid: 84cb6f84bc06b8044b0dec190c3c70f7, type: 3}
     probability: 0
-    Probability: 0
+    Probability: 22
+  - prefab: {fileID: 0}
+    Prefab: {fileID: 5224240038758998689, guid: a895bca5e6c83b840b4b00045b4899ef, type: 3}
+    probability: 0
+    Probability: 22
+  - prefab: {fileID: 0}
+    Prefab: {fileID: 5224240038758998689, guid: 4dc95092f2eb16c4fb506c26b745c932, type: 3}
+    probability: 0
+    Probability: 22
   m_Method: 1
   m_Space: 0
   m_Spacing: {x: 5, y: 5}
@@ -10633,6 +10641,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5b33969231680ce4c815fa8a2e6b6afa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+--- !u!224 &1375197242 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8567635349809060521, guid: 847b7bb3dcbd66d41b937a3185ea7b50, type: 3}
+  m_PrefabInstance: {fileID: 8025233092587005085}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1381237485
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15064,11 +15077,6 @@ Terrain:
   m_EnableHeightmapRayTracing: 1
   m_EnableTreesAndDetailsRayTracing: 0
   m_TreeMotionVectorModeOverride: 3
---- !u!224 &1979553721 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 9092623230082795340, guid: 847b7bb3dcbd66d41b937a3185ea7b50, type: 3}
-  m_PrefabInstance: {fileID: 8025233092587005085}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1982384480
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16300,7 +16308,15 @@ MonoBehaviour:
   - prefab: {fileID: 0}
     Prefab: {fileID: 5224240038758998689, guid: 84cb6f84bc06b8044b0dec190c3c70f7, type: 3}
     probability: 0
-    Probability: 0
+    Probability: 22
+  - prefab: {fileID: 0}
+    Prefab: {fileID: 5224240038758998689, guid: a895bca5e6c83b840b4b00045b4899ef, type: 3}
+    probability: 0
+    Probability: 22
+  - prefab: {fileID: 0}
+    Prefab: {fileID: 5224240038758998689, guid: 4dc95092f2eb16c4fb506c26b745c932, type: 3}
+    probability: 0
+    Probability: 22
   m_Method: 1
   m_Space: 0
   m_Spacing: {x: 5, y: 5}
@@ -16332,7 +16348,7 @@ MonoBehaviour:
     space: 0
   m_DeprecatedInstances: []
   m_AutoRefresh: 1
-  m_Seed: -1999364
+  m_Seed: -142809724
 --- !u!1001 &2142952116
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16612,7 +16628,7 @@ PrefabInstance:
     - target: {fileID: 933466767938162223, guid: 847b7bb3dcbd66d41b937a3185ea7b50, type: 3}
       propertyPath: textRect
       value: 
-      objectReference: {fileID: 1979553721}
+      objectReference: {fileID: 1375197242}
     - target: {fileID: 3978941519744226448, guid: 847b7bb3dcbd66d41b937a3185ea7b50, type: 3}
       propertyPath: m_SizeDelta.x
       value: 3232.9312
