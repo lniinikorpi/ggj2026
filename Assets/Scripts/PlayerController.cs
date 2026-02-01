@@ -1107,6 +1107,11 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Water")) {
+            if (isRagdoll)
+            {
+                return;
+            }
+
             EnterRagdoll(true);
         }
     }
