@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float boardAudioMaxVolume = 1f;
     [SerializeField, Range(0.1f, 3f)] private float boardAudioMinPitch = 0.85f;
     [SerializeField, Range(0.1f, 3f)] private float boardAudioMaxPitch = 1.25f;
+    [SerializeField] private float currentBoardVol;
+    [SerializeField] private float currentAirVol;
 
     [Header("Customization")]
     [SerializeField] private List<SkinnedMeshRenderer> maskRenderers;
@@ -337,10 +339,12 @@ public class PlayerController : MonoBehaviour
         float speed = rb.linearVelocity.magnitude;
         float t = maxSpeed <= 0f ? 0f : Mathf.Clamp01(speed / maxSpeed);
 
-        float volume = grounded ? t * boardAudioMaxVolume : 0f;
+        float targetVolume = grounded ? t * boardAudioMaxVolume : 0f;
         float pitch = Mathf.Lerp(boardAudioMinPitch, boardAudioMaxPitch, t);
 
-        ApplyBoardAudio(volume, pitch);
+        currentBoardVol = Mathf.MoveTowards(currentBoardVol, targetVolume, Time.deltaTime * 10f);
+
+        ApplyBoardAudio(currentBoardVol, pitch);
     }
 
     private void ApplyBoardAudio(float volume, float pitch)
@@ -358,10 +362,11 @@ public class PlayerController : MonoBehaviour
         float t = maxSpeed <= 0f ? 0f : Mathf.Clamp01(speed / maxSpeed);
 
         // While airborne, use the wheel-in-air sound instead of the ground rolling sound.
-        float volume = grounded ? 0f : t * boardAudioMaxVolume;
+        float targetVolume = !grounded ? (t * boardAudioMaxVolume *0.5f):0;
         float pitch = Mathf.Lerp(boardAudioMinPitch, boardAudioMaxPitch, t);
 
-        ApplyAirWheelAudio(volume, pitch);
+        currentAirVol = Mathf.MoveTowards(currentAirVol, targetVolume, Time.deltaTime * 10f);
+        ApplyAirWheelAudio(currentAirVol, pitch);
     }
 
     private void ApplyAirWheelAudio(float volume, float pitch)
@@ -371,20 +376,9 @@ public class PlayerController : MonoBehaviour
         airWheelAudioSource.volume = volume;
         airWheelAudioSource.pitch = pitch;
 
-        // Avoid keeping the source running silently (helps if it isn't set to "Play On Awake").
-        if (volume > 0.001f)
+        if (!airWheelAudioSource.isPlaying)
         {
-            if (!airWheelAudioSource.isPlaying)
-            {
-                airWheelAudioSource.Play();
-            }
-        }
-        else
-        {
-            if (airWheelAudioSource.isPlaying)
-            {
-                airWheelAudioSource.Stop();
-            }
+            airWheelAudioSource.Play();
         }
     }
 

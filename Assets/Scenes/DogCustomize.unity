@@ -3135,7 +3135,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Back
+  m_text: Play
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 53897e92ac053da4fae6968f2a5ff1bd, type: 2}
   m_sharedMaterial: {fileID: 5510179624531366958, guid: 53897e92ac053da4fae6968f2a5ff1bd, type: 2}
@@ -10631,31 +10631,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.84
+      value: -0.739
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.56
+      value: 5.62
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -8.19
+      value: 15.243
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.49999994
+      value: -0.0566017
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.86602545
+      value: -0.9983969
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -10663,7 +10663,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -120
+      value: -186.49
       objectReference: {fileID: 0}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -14376,13 +14376,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1545610930}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.06504545, y: 0.016893014, z: 0.0011013041, w: 0.9977387}
-  m_LocalPosition: {x: 0.36, y: 0.47, z: -9.33}
+  m_LocalRotation: {x: -0.055003557, y: -0.53285044, z: -0.034738, w: 0.84370506}
+  m_LocalPosition: {x: 0.11488831, y: 5.5299997, z: 14.348076}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -7.46, y: 1.94, z: 0}
+  m_LocalEulerAnglesHint: {x: -7.46, y: -64.55, z: 0}
 --- !u!114 &1545610934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14517,6 +14517,7 @@ GameObject:
   - component: {fileID: 1548844941}
   - component: {fileID: 1548844945}
   - component: {fileID: 1548844946}
+  - component: {fileID: 1548844947}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -14656,6 +14657,18 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1548844947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548844940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 582406936986ee7458dc561bfd9a3ba3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameMenu
 --- !u!1001 &1577758075
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17375,7 +17388,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1874314865}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1548844947}
+        m_TargetAssemblyTypeName: GameMenu, Assembly-CSharp
+        m_MethodName: PlayGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1874314865
 MonoBehaviour:
   m_ObjectHideFlags: 0
