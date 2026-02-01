@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource airWheelAudioSource;
     [SerializeField] private AudioSource AudioTrickTutorial;
     [SerializeField] private CinemachineCamera cinemachineCamera;
+    [SerializeField] private ParticleSystem trickParticles;
 
     [Header("Camera FOV (Speed Based)")]
     [SerializeField] private bool enableSpeedBasedFov = true;
@@ -350,6 +351,8 @@ public class PlayerController : MonoBehaviour
             {
                 ApplyLandingTrickBoost();
                 landingBoostPending = false;
+                trickParticles.Stop();
+                trickParticles.Play();
             }
             if (isTrickTutorial && lastTrick != null)
             {
