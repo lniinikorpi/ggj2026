@@ -1223,6 +1223,11 @@ public class PlayerController : MonoBehaviour
         cameraTarget.rotation = pitchRotation * baseRotation;
     }
 
+    public void EndGame()
+    {
+        boardAudioSource.Stop();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Water")) {
