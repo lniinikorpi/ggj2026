@@ -27,8 +27,15 @@ public class UI_Updater : MonoBehaviour
         _currentTrickScoreText = _currentTrickScore.GetComponent<TextMeshProUGUI>();
         _trickDescriptionText = _trickDescription.GetComponent<TextMeshProUGUI>();
         _currentTimeText = _currentTime.GetComponent<TextMeshProUGUI>();
-        _bestTimeText = _bestTime.GetComponent<TextMeshProUGUI>();
+        _bestTimeText = _bestTime.GetComponent<TMP_Text>();
         _lapInfoText = _lapInfo.GetComponent<TextMeshProUGUI>();
+
+        if (HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestScore(out float bestScore))
+            _bestTimeText.text = $"BEST TIME:{FormatTime(bestScore)}";
+        else if (gameData.bestTotalTime > 0)
+            _bestTimeText.text = $"BEST TIME:{FormatTime(gameData.bestTotalTime)}";
+        else
+            _bestTimeText.text = "BEST TIME:--:---";
     }
 
     private void Start()
@@ -43,7 +50,6 @@ public class UI_Updater : MonoBehaviour
         _totalScoreText.text = $"Score: {Mathf.Floor(gameData.score)}";
         _lapInfoText.text = $"{gameData.currentLap}/{gameData.maxLap}";
         _currentTimeText.text = $"{Mathf.FloorToInt(gameData.currentTotalTime % 60):00}:{Mathf.RoundToInt((gameData.currentTotalTime % 1f) * 1000f):000}";
-        _bestTimeText.text = $"BEST TIME:{gameData.bestTotalTime}";
         
         if (gameData.trickNames.Count > 0)
         {
@@ -67,4 +73,7 @@ public class UI_Updater : MonoBehaviour
             _currentTrickScoreText.text = "";
         }
     }
+
+    private static string FormatTime(float timeSeconds) =>
+        $"{Mathf.FloorToInt(timeSeconds % 60):00}:{Mathf.RoundToInt((timeSeconds % 1f) * 1000f):000}";
 }
