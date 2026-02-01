@@ -28,7 +28,7 @@ public class GameMenu : MonoBehaviour
 
     public void SkipTutorial()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("DogCustomize");
     }
 
 }
