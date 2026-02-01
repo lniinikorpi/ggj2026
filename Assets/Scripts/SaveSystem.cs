@@ -31,6 +31,9 @@ public class SaveData
 {
     public HighScoreData highScores;
 
+    // Tutorial
+    public bool tutorialCompleted;
+
     // Leaderboard
     // 0 = best (top of leaderboard). Higher = worse.
     public int playerLeaderboardIndex;
@@ -45,6 +48,7 @@ public class SaveData
         selectedMaskIndex = 0;
         selectedMaskMaterialIndex = 0;
         playerLeaderboardIndex = 0;
+        tutorialCompleted = false;
     }
     
     public SaveData(HighScoreData data)
@@ -53,6 +57,7 @@ public class SaveData
         selectedMaskIndex = 0;
         selectedMaskMaterialIndex = 0;
         playerLeaderboardIndex = 0;
+        tutorialCompleted = false;
     }
 }
 

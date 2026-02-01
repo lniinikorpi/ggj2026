@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     TrickData lastTrick;
     [SerializeField] bool isTrickTutorial;
     private List<TrickData> TutorialTricks = new List<TrickData>();
+    private bool tutorialCompletionSaved;
     [Header("References")]
     [SerializeField] private GameObject playerMesh;
     [SerializeField] private Transform cameraTarget;
@@ -211,6 +212,7 @@ public class PlayerController : MonoBehaviour
         if (TutorialTricks.Count == tricks.Count)
         {
             StartCoroutine (SwitchSceneFade());
+            SaveTutorialCompleted();
         }
         
     }
@@ -219,6 +221,21 @@ public class PlayerController : MonoBehaviour
         StartCoroutine (FadeCanvasAlphaTo(1, 2));
         yield return new WaitForSeconds(2);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    private void SaveTutorialCompleted()
+    {
+        if (tutorialCompletionSaved) return;
+        if (!isTrickTutorial) return;
+
+        tutorialCompletionSaved = true;
+
+        SaveData save = SaveSystem.LoadGame();
+        if (!save.tutorialCompleted)
+        {
+            save.tutorialCompleted = true;
+            SaveSystem.SaveGame(save);
+        }
     }
     private void CacheRagdollOffsets()
     {
