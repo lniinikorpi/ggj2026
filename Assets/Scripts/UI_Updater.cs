@@ -65,7 +65,7 @@ public class UI_Updater : MonoBehaviour
     {
         _totalScoreText.text = $"Score: {Mathf.Floor(gameData.score)}";
         _lapInfoText.text = $"{gameData.currentLap}/{gameData.maxLap}";
-        _currentTimeText.text = $"{Mathf.FloorToInt(gameData.currentTotalTime % 60):00}:{Mathf.RoundToInt((gameData.currentTotalTime % 1f) * 1000f):000}";
+        _currentTimeText.text = FormatTime(gameData.currentTotalTime);
         
         if (gameData.trickNames.Count > 0)
         {
@@ -93,9 +93,87 @@ public class UI_Updater : MonoBehaviour
     public void ActivateEndPanel()
     {
         endPanel.SetActive(true);
-        highScoreText.text = HighScoreManager.Instance.GetHighScores();
+        highScoreText.text = BuildEndPanelHighScoreText();
     }
 
-    private static string FormatTime(float timeSeconds) =>
-        $"{Mathf.FloorToInt(timeSeconds % 60):00}:{Mathf.RoundToInt((timeSeconds % 1f) * 1000f):000}";
+    private string BuildEndPanelHighScoreText()
+    {
+        // 8 hardcoded baseline times (in seconds) for the default lap count.
+        // These are display-only and are scaled based on the current max lap amount.
+        float[] baselineTimesSeconds =
+        {
+            55f,
+            65f,
+            75f,
+            85f,
+            95f,
+            105f,
+            112f,
+            120f
+        };
+
+        int maxLap = Mathf.Max(1, gameData != null ? gameData.maxLap : 1);
+
+        var entries = new System.Collections.Generic.List<(string name, float timeSeconds, bool isPlayer)>();
+        for (int i = 0; i < baselineTimesSeconds.Length; i++)
+        {
+            float scaled = baselineTimesSeconds[i] * maxLap;
+            entries.Add(($"TIME {i + 1}", scaled, false));
+        }
+
+        float currentRunTime = 0f;
+        if (gameData != null)
+        {
+            currentRunTime = gameData.totalTime > 0f ? gameData.totalTime : gameData.currentTotalTime;
+        }
+
+        float savedBest = 0f;
+        bool hasSavedBest = HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestScore(out savedBest);
+
+        float playerBest = 0f;
+        if (hasSavedBest && savedBest > 0f)
+            playerBest = savedBest;
+        if (currentRunTime > 0f)
+            playerBest = playerBest > 0f ? Mathf.Min(playerBest, currentRunTime) : currentRunTime;
+
+        if (playerBest > 0f)
+            entries.Add(("YOU", playerBest, true));
+
+        entries.Sort((a, b) => a.timeSeconds.CompareTo(b.timeSeconds));
+
+        var sb = new System.Text.StringBuilder();
+        for (int i = 0; i < entries.Count; i++)
+        {
+            var e = entries[i];
+            string name = e.isPlayer ? $"> {e.name}" : e.name;
+            sb.Append($"{i + 1}. {name} : {FormatTime(e.timeSeconds)}");
+            if (i < entries.Count - 1)
+                sb.Append('\n');
+        }
+
+        return sb.ToString();
+    }
+
+    private static string FormatTime(float timeSeconds)
+    {
+        int totalSeconds = Mathf.FloorToInt(timeSeconds);
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+
+        int milliseconds = Mathf.RoundToInt((timeSeconds - totalSeconds) * 1000f);
+        if (milliseconds >= 1000)
+        {
+            milliseconds = 0;
+            seconds++;
+            if (seconds >= 60)
+            {
+                seconds = 0;
+                minutes++;
+            }
+        }
+
+        return minutes > 0
+            ? $"{minutes:00}:{seconds:00}:{milliseconds:000}"
+            : $"{seconds:00}:{milliseconds:000}";
+    }
 }

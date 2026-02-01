@@ -31,6 +31,10 @@ public class SaveData
 {
     public HighScoreData highScores;
 
+    // Leaderboard
+    // 0 = best (top of leaderboard). Higher = worse.
+    public int playerLeaderboardIndex;
+
     // Customization
     public int selectedMaskIndex;
     public int selectedMaskMaterialIndex;
@@ -40,6 +44,7 @@ public class SaveData
         highScores = new HighScoreData(true);
         selectedMaskIndex = 0;
         selectedMaskMaterialIndex = 0;
+        playerLeaderboardIndex = 0;
     }
     
     public SaveData(HighScoreData data)
@@ -47,6 +52,7 @@ public class SaveData
         highScores = data;
         selectedMaskIndex = 0;
         selectedMaskMaterialIndex = 0;
+        playerLeaderboardIndex = 0;
     }
 }
 

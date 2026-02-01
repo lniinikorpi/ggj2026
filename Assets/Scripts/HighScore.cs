@@ -42,6 +42,25 @@ public class HighScoreManager : MonoBehaviour
     }
     
     private void SortScores() => data.highScores = data.highScores.OrderBy(e => e.score).ToList();
+
+    /// <summary>
+    /// Returns the leaderboard index a score would have in the current leaderboard.
+    /// 0 = best (lowest time). Clamped to last index.
+    /// </summary>
+    public int GetLeaderboardIndexForScore(float score)
+    {
+        if (data == null || data.highScores == null || data.highScores.Count == 0)
+            return 0;
+
+        SortScores();
+        for (int i = 0; i < data.highScores.Count; i++)
+        {
+            if (score <= data.highScores[i].score)
+                return i;
+        }
+
+        return data.highScores.Count - 1;
+    }
     
     // is higher than last one in the leaderboards
     public bool IsEligibleForLeaderboard(float score) => score < data.highScores[^1].score;
@@ -60,14 +79,24 @@ public class HighScoreManager : MonoBehaviour
     public void AddNewScore(string playerName, float score)
     {
         if(string.IsNullOrWhiteSpace(playerName)) playerName = "Anonymous";
-        
-        data.highScores.Add(new HighScoreEntry(playerName, score));
+
+        var entry = new HighScoreEntry(playerName, score);
+        data.highScores.Add(entry);
         SortScores();
         Debug.Log($"Added new high score {data}");
         
         if (data.highScores.Count > MAX_SCORES) data.highScores = data.highScores.Take(MAX_SCORES).ToList();
-        
-        SaveSystem.SaveGame(new SaveData(data));
+
+        // Persist highscores AND the player's placement without wiping other save fields.
+        SaveData save = SaveSystem.LoadGame();
+        save.highScores = data;
+
+        int index = data.highScores.IndexOf(entry);
+        // In case the entry was trimmed out for any reason, fall back to last.
+        if (index < 0) index = Mathf.Max(0, data.highScores.Count - 1);
+        save.playerLeaderboardIndex = index;
+
+        SaveSystem.SaveGame(save);
     }
 
     public string GetHighScores()

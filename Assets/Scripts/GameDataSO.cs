@@ -74,6 +74,7 @@ public class GameDataSO : ScriptableObject
         lastLapTime = 0;
         trickMultiplier = 1;
         trickPointPool = 0;
+        isGameOver = false;
         trickNames.Clear();
     }
 }

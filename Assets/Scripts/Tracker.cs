@@ -112,6 +112,13 @@ public class Tracker : MonoBehaviour
                         Debug.Log("Eligible for leaderboard");
                         HighScoreManager.Instance.AddNewScore("", gameData.totalTime);
                     }
+                    else
+                    {
+                        // Persist the player's placement even if they didn't make the leaderboard.
+                        SaveData save = SaveSystem.LoadGame();
+                        save.playerLeaderboardIndex = HighScoreManager.Instance.GetLeaderboardIndexForScore(gameData.totalTime);
+                        SaveSystem.SaveGame(save);
+                    }
 
                     _triggeredCheckpoints.Clear();
                     return;
