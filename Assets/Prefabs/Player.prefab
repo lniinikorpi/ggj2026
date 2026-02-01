@@ -28,8 +28,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 185076302144638586}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.2922048, z: 0, w: 0.95635575}
-  m_LocalPosition: {x: 2.5724235, y: 3.8300002, z: 2.8106053}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.4699999, y: 0.4100001, z: -1.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -589,6 +589,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tracker
   gameData: {fileID: 11400000, guid: 7dbca43afead5774faa67c16672b9117, type: 2}
+  uiUpdater: {fileID: 0}
   requiredCheckpoints: []
   debugLogCheckpointUpdates: 0
 --- !u!1 &3405685918614932954
@@ -775,6 +776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c90d8d62257a5264ba91ab2869d8b0b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  isTrickTutorial: 0
   playerMesh: {fileID: 6179131447830100879}
   cameraTarget: {fileID: 7957603284590517367}
   animators:
@@ -788,6 +790,12 @@ MonoBehaviour:
   jumpAudioSource: {fileID: 8612197140941654339}
   landAudioSource: {fileID: 2147022700260368567}
   airWheelAudioSource: {fileID: 875161876147708796}
+  AudioTrickTutorial: {fileID: 0}
+  cinemachineCamera: {fileID: 1913502517819510839}
+  enableSpeedBasedFov: 1
+  speedBasedFovMaxIncrease: 15
+  speedBasedFovReferenceSpeed: 10
+  speedBasedFovSmoothing: 8
   boardAudioMaxVolume: 1
   boardAudioMinPitch: 0.85
   boardAudioMaxPitch: 1.25
@@ -868,6 +876,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tracker
   gameData: {fileID: 11400000, guid: 7dbca43afead5774faa67c16672b9117, type: 2}
+  uiUpdater: {fileID: 0}
   requiredCheckpoints:
   - {fileID: 0}
   - {fileID: 0}
