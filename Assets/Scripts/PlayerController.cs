@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource landAudioSource;
     [SerializeField] private AudioSource airWheelAudioSource;
     [SerializeField] private AudioSource AudioTrickTutorial;
+    [SerializeField] private CinemachineCamera cinemachineCamera;
+
+    [Header("Camera FOV (Speed Based)")]
+    [SerializeField] private bool enableSpeedBasedFov = true;
+    [SerializeField, Range(0f, 60f)] private float speedBasedFovMaxIncrease = 15f;
+    [SerializeField, Range(0.01f, 50f)] private float speedBasedFovReferenceSpeed = 10f;
+    [SerializeField, Range(0f, 30f)] private float speedBasedFovSmoothing = 8f;
+    private float speedBasedFovMin;
+    private float speedBasedFovCurrent;
 
     [Header("Board Audio")]
     [SerializeField, Range(0f, 1f)] private float boardAudioMaxVolume = 1f;
@@ -268,6 +278,18 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         ApplySavedCustomization();
+
+        CacheSpeedBasedFovMin();
+    }
+
+    private void CacheSpeedBasedFovMin()
+    {
+        if (cinemachineCamera == null) return;
+
+        // Take the minimum FOV from the current camera value at startup.
+        var lens = cinemachineCamera.Lens;
+        speedBasedFovMin = lens.FieldOfView;
+        speedBasedFovCurrent = speedBasedFovMin;
     }
 
     private void ApplySavedCustomization()
@@ -303,6 +325,7 @@ public class PlayerController : MonoBehaviour
 
         UpdateMeshTransform();
         UpdateCameraTargetTransform();
+        UpdateSpeedBasedFov(Time.deltaTime);
         if (isJumpHold) HoldJump(Time.deltaTime);
 
         bool grounded = IsGrounded();
@@ -349,6 +372,31 @@ public class PlayerController : MonoBehaviour
             gameData.CalculateTrickScore();
             isTrickScorePending = false;
         }
+    }
+
+    private void UpdateSpeedBasedFov(float dt)
+    {
+        if (!enableSpeedBasedFov) return;
+        if (cinemachineCamera == null) return;
+        if (rb == null) return;
+
+        // If Start() didn't run yet (or camera got assigned later), ensure we have a sane baseline.
+        if (speedBasedFovMin <= 0.0001f)
+        {
+            CacheSpeedBasedFovMin();
+        }
+
+        float horizontalSpeed = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z).magnitude;
+        float referenceSpeed = speedBasedFovReferenceSpeed > 0.0001f ? speedBasedFovReferenceSpeed : maxSpeed;
+        float t = referenceSpeed > 0.0001f ? Mathf.Clamp01(horizontalSpeed / referenceSpeed) : 0f;
+
+        float targetFov = speedBasedFovMin + (speedBasedFovMaxIncrease * t);
+        float lerpT = speedBasedFovSmoothing <= 0f ? 1f : Mathf.Clamp01(dt * speedBasedFovSmoothing);
+        speedBasedFovCurrent = Mathf.Lerp(speedBasedFovCurrent, targetFov, lerpT);
+
+        var lens = cinemachineCamera.Lens;
+        lens.FieldOfView = speedBasedFovCurrent;
+        cinemachineCamera.Lens = lens;
     }
 
     void FixedUpdate()
