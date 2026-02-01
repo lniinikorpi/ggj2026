@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -28,6 +27,16 @@ public class HighScoreManager : MonoBehaviour
     private void LoadHighscores()
     {
         data = SaveSystem.LoadGame().highScores;
+        if (data == null)
+            data = new HighScoreData(true);
+
+        if (data.highScores == null)
+            data.highScores = new List<HighScoreEntry>();
+
+        if (data.highScores.Count == 0)
+            data = new HighScoreData(true);
+
+        SortScores();
         Debug.Log("Loaded high scores");
         Debug.Log(data);
     }
@@ -36,6 +45,17 @@ public class HighScoreManager : MonoBehaviour
     
     // is higher than last one in the leaderboards
     public bool IsEligibleForLeaderboard(float score) => score < data.highScores[^1].score;
+
+    public bool TryGetBestScore(out float bestScore)
+    {
+        bestScore = 0;
+        if (data == null || data.highScores == null || data.highScores.Count == 0)
+            return false;
+
+        // Data is kept sorted ascending (lower time is better).
+        bestScore = data.highScores[0].score;
+        return true;
+    }
 
     public void AddNewScore(string playerName, float score)
     {
