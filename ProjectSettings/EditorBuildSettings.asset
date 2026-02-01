@@ -12,6 +12,9 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 3425c0fd1fb2672439eed79119a6ec89
   - enabled: 1
+    path: Assets/Scenes/TutorialPark.unity
+    guid: 8d8fe791cf0d3d44bae6cee0159a7185
+  - enabled: 1
     path: Assets/Scenes/StoryScene.unity
     guid: 01a8b3c7e148ee54db37e7f30bdfd9eb
   - enabled: 1

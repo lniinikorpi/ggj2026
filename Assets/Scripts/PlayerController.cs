@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
+    TrickData lastTrick;
+    [SerializeField] bool isTrickTutorial;
+    private List<TrickData> TutorialTricks = new List<TrickData>();
     [Header("References")]
     [SerializeField] private GameObject playerMesh;
     [SerializeField] private Transform cameraTarget;
@@ -17,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource jumpAudioSource;
     [SerializeField] private AudioSource landAudioSource;
     [SerializeField] private AudioSource airWheelAudioSource;
+    [SerializeField] private AudioSource AudioTrickTutorial;
 
     [Header("Board Audio")]
     [SerializeField, Range(0f, 1f)] private float boardAudioMaxVolume = 1f;
@@ -196,7 +200,24 @@ public class PlayerController : MonoBehaviour
         // Ensure ragdoll physics are disabled on start (they can be enabled on fall).
         SetRagdollEnabled(false);
     }
-
+    private void AddTutorialTrick(TrickData trick)
+    {
+        if (TutorialTricks.Contains(trick)) { return; }
+        
+        TutorialTricks.Add(trick);
+        AudioTrickTutorial.Play();
+        if (TutorialTricks.Count == tricks.Count)
+        {
+            StartCoroutine (SwitchSceneFade());
+        }
+        
+    }
+    private System.Collections.IEnumerator SwitchSceneFade()
+    {
+        StartCoroutine (FadeCanvasAlphaTo(1, 2));
+        yield return new WaitForSeconds(2);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
     private void CacheRagdollOffsets()
     {
         if (ragdollPlayerRigidbody != null)
@@ -288,7 +309,11 @@ public class PlayerController : MonoBehaviour
                 ApplyLandingTrickBoost();
                 landingBoostPending = false;
             }
-
+            if (isTrickTutorial && lastTrick != null)
+            {
+                AddTutorialTrick(lastTrick);
+                lastTrick = null;
+            }
             bufferedDirections.Clear();
             lastBufferedDirection = null;
         }
@@ -990,7 +1015,10 @@ public class PlayerController : MonoBehaviour
         {
             boardAnimator.Play(trick.boardClip.name);
         }
-
+        if (isTrickTutorial)
+        {
+            lastTrick = trick;
+        }
         float duration = Mathf.Max(0.01f, trick.trickTime);
         StartCoroutine(UnlockTrickAfter(duration));
     }
