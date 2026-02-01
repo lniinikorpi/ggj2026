@@ -7,6 +7,7 @@ public class CustomizeUIButton : MonoBehaviour
     [SerializeField] private CustomizeUIController controller;
     [SerializeField] private int maskIndex;
     [SerializeField] private int materialIndex;
+    [SerializeField] private GameObject noImage;
     private Button button;
 
     private void Awake()
@@ -32,5 +33,10 @@ public class CustomizeUIButton : MonoBehaviour
         save.selectedMaskIndex = maskIndex;
         save.selectedMaskMaterialIndex = materialIndex;
         SaveSystem.SaveGame(save);
+    }
+
+    public void EnableButton(bool isEnabled)
+    {
+        if (noImage != null) noImage.SetActive(!isEnabled);
     }
 }

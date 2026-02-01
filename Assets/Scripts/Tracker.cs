@@ -153,7 +153,10 @@ public class Tracker : MonoBehaviour
     private void EndGame()
     {
         if (_playerController != null)
+        {
+            _playerController.EndGame();
             _playerController.enabled = false;
+        }
 
         if (_rigidbody != null)
         {
