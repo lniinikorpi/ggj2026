@@ -485,6 +485,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Tracker
   gameData: {fileID: 11400000, guid: 7dbca43afead5774faa67c16672b9117, type: 2}
+  uiUpdater: {fileID: 542766316}
   requiredCheckpoints:
   - {fileID: 2061899330}
   - {fileID: 2054857771}
@@ -3478,6 +3479,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2836050257033155109, guid: e5d080fb6eb56524ca4880369d85d92f, type: 3}
   m_PrefabInstance: {fileID: 518656759}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &542766316 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 299425046807433479, guid: 847b7bb3dcbd66d41b937a3185ea7b50, type: 3}
+  m_PrefabInstance: {fileID: 8025233092587005085}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 344133f8178138045abac796c77b0690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Updater
 --- !u!1 &551043919
 GameObject:
   m_ObjectHideFlags: 0
@@ -13751,6 +13763,10 @@ PrefabInstance:
       propertyPath: m_Volume
       value: 0.626
       objectReference: {fileID: 0}
+    - target: {fileID: 2341437265173731260, guid: eaba263a84901404c98963114859e384, type: 3}
+      propertyPath: uiUpdater
+      value: 
+      objectReference: {fileID: 542766316}
     - target: {fileID: 4721617791097677619, guid: eaba263a84901404c98963114859e384, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.87
@@ -13847,7 +13863,8 @@ PrefabInstance:
       propertyPath: field of view
       value: 70.2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4546613063396069656, guid: eaba263a84901404c98963114859e384, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:

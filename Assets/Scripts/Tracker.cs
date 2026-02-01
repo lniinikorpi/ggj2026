@@ -4,6 +4,7 @@ using UnityEngine;
 public class Tracker : MonoBehaviour
 {
     [SerializeField] private GameDataSO gameData;
+    [SerializeField] private UI_Updater uiUpdater;
     [Header("Lap validation")]
     [SerializeField] private List<Collider> requiredCheckpoints = new();
 
@@ -12,6 +13,7 @@ public class Tracker : MonoBehaviour
     [SerializeField] private bool debugLogCheckpointUpdates;
 
     private Rigidbody _rigidbody;
+    private PlayerController _playerController;
 
     private HashSet<Collider> _requiredCheckpointSet;
     private readonly HashSet<Collider> _triggeredCheckpoints = new();
@@ -32,6 +34,9 @@ public class Tracker : MonoBehaviour
         gameData.ResetData();
         gameData.maxLap = 3;
         _rigidbody = gameObject.GetComponent<Rigidbody>();
+        _playerController = gameObject.GetComponent<PlayerController>();
+        if (uiUpdater == null)
+            uiUpdater = FindAnyObjectByType<UI_Updater>();
 
         _requiredCheckpointSet = new HashSet<Collider>();
         if (requiredCheckpoints != null)
@@ -46,12 +51,17 @@ public class Tracker : MonoBehaviour
     
     void Update()
     {
+        if (gameData.isGameOver)
+            return;
         gameData.currentTotalTime += Time.deltaTime;
         gameData.currentLapTime += Time.deltaTime;
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        if (gameData.isGameOver)
+            return;
+
         if (_requiredCheckpointSet != null && _requiredCheckpointSet.Contains(other))
         {
             // Ignore duplicate triggers in the same lap.
@@ -94,6 +104,9 @@ public class Tracker : MonoBehaviour
                     Debug.Log("Finish");
                     gameData.totalTime = gameData.currentTotalTime;
 
+                    gameData.isGameOver = true;
+                    EndGame();
+
                     if (HighScoreManager.Instance.IsEligibleForLeaderboard(gameData.totalTime))
                     {
                         Debug.Log("Eligible for leaderboard");
@@ -128,5 +141,22 @@ public class Tracker : MonoBehaviour
         }
 
         return true;
+    }
+
+    private void EndGame()
+    {
+        if (_playerController != null)
+            _playerController.enabled = false;
+
+        if (_rigidbody != null)
+        {
+            _rigidbody.linearVelocity = Vector3.zero;
+            _rigidbody.angularVelocity = Vector3.zero;
+        }
+
+        if (uiUpdater != null)
+            uiUpdater.ActivateEndPanel();
+        else
+            Debug.LogWarning("[Tracker] End game reached, but no UI_Updater reference was found.");
     }
 }

@@ -69,6 +69,11 @@ public class HighScoreManager : MonoBehaviour
         
         SaveSystem.SaveGame(new SaveData(data));
     }
+
+    public string GetHighScores()
+    {
+        return data.ToString();
+    }
 }
 
 [Serializable]
@@ -108,7 +113,7 @@ public class HighScoreData
 
     public override string ToString()
     {
-        String str = "Highscores: \n";
+        String str = "";
         
         for(int i = 0; i < highScores.Count; ++i) str +=  $"{highScores[i]}\n";
         

@@ -1,6 +1,8 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UI_Updater : MonoBehaviour
 {
@@ -11,6 +13,10 @@ public class UI_Updater : MonoBehaviour
     [SerializeField] private GameObject  _currentTime;
     [SerializeField] private GameObject  _bestTime;
     [SerializeField] private GameObject  _lapInfo;
+    [SerializeField] private GameObject endPanel;
+    [SerializeField] private TMP_Text highScoreText;
+    [SerializeField] private Button restartButton;
+    [SerializeField] private Button menuButton;
     [Header("Data object")]
     [SerializeField] private GameDataSO gameData;
 
@@ -33,6 +39,7 @@ public class UI_Updater : MonoBehaviour
 
     private void Start()
     {
+        endPanel.SetActive(false);
         _trickDescriptionText.text = "";
         _currentTrickScoreText.text = "";
         gameData.ResetData();
@@ -42,6 +49,16 @@ public class UI_Updater : MonoBehaviour
             _bestTimeText.text = $"BEST TIME:{FormatTime(gameData.bestTotalTime)}";
         else
             _bestTimeText.text = "BEST TIME:--:---";
+        
+        restartButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        });
+        
+        menuButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(0);
+        });
     }
 
     void Update()
@@ -71,6 +88,12 @@ public class UI_Updater : MonoBehaviour
             _trickDescriptionText.text = "";
             _currentTrickScoreText.text = "";
         }
+    }
+
+    public void ActivateEndPanel()
+    {
+        endPanel.SetActive(true);
+        highScoreText.text = HighScoreManager.Instance.GetHighScores();
     }
 
     private static string FormatTime(float timeSeconds) =>
