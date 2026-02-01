@@ -619,8 +619,6 @@ public class PlayerController : MonoBehaviour
         SetRagdollEnabled(false);
         SetControllerEnabled(true);
 
-        isRagdoll = false;
-
         // Reset core motion/state so controller behaves consistently after teleport.
         if (CanWriteVelocity(rb))
         {
@@ -703,6 +701,8 @@ public class PlayerController : MonoBehaviour
 
         // Keep ragdoll parts with the player so we don't leave pieces behind in the scene.
         ResetRagdollTransformsToRespawn();
+
+        isRagdoll = false;
     }
 
     private void ResetRagdollTransformsToRespawn()
