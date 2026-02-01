@@ -29,13 +29,6 @@ public class UI_Updater : MonoBehaviour
         _currentTimeText = _currentTime.GetComponent<TextMeshProUGUI>();
         _bestTimeText = _bestTime.GetComponent<TMP_Text>();
         _lapInfoText = _lapInfo.GetComponent<TextMeshProUGUI>();
-
-        if (HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestScore(out float bestScore))
-            _bestTimeText.text = $"BEST TIME:{FormatTime(bestScore)}";
-        else if (gameData.bestTotalTime > 0)
-            _bestTimeText.text = $"BEST TIME:{FormatTime(gameData.bestTotalTime)}";
-        else
-            _bestTimeText.text = "BEST TIME:--:---";
     }
 
     private void Start()
@@ -43,6 +36,12 @@ public class UI_Updater : MonoBehaviour
         _trickDescriptionText.text = "";
         _currentTrickScoreText.text = "";
         gameData.ResetData();
+        if (HighScoreManager.Instance != null && HighScoreManager.Instance.TryGetBestScore(out float bestScore))
+            _bestTimeText.text = $"BEST TIME:{FormatTime(bestScore)}";
+        else if (gameData.bestTotalTime > 0)
+            _bestTimeText.text = $"BEST TIME:{FormatTime(gameData.bestTotalTime)}";
+        else
+            _bestTimeText.text = "BEST TIME:--:---";
     }
 
     void Update()
