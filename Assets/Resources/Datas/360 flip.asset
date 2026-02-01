@@ -15,5 +15,5 @@ MonoBehaviour:
   trickName: 360 flip
   directions: 0300000000000000
   trickTime: 0.5
-  clip: {fileID: 0}
+  clip: {fileID: -8245312486450634912, guid: ef855e0700b0c2a4c88c9f1cca52e1fd, type: 3}
   boardClip: {fileID: 7400000, guid: 403220fcd32557b4e9d04c62f71cfae2, type: 2}
