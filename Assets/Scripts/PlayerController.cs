@@ -154,6 +154,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 cameraUpVelocity;
 
     private Tracker tracker;
+    private bool canTriggerWater = true;
 
    
     
@@ -511,6 +512,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isRagdoll) return;
         isRagdoll = true;
+        canTriggerWater = false;
 
         if (animators != null)
         {
@@ -586,6 +588,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         yield return FadeCanvasAlphaTo(0f, respawnFadeOutDuration);
         fadeRoutine = null;
+        canTriggerWater = true;
     }
 
     private System.Collections.IEnumerator FadeCanvasAlphaTo(float targetAlpha, float duration)
@@ -1107,7 +1110,7 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Water")) {
-            if (isRagdoll)
+            if (!canTriggerWater)
             {
                 return;
             }
