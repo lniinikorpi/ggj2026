@@ -14,6 +14,7 @@ public class GameDataSO : ScriptableObject
     public float lastLapTime;
     public float currentTotalTime;
     public float currentLapTime;
+    public bool isGameOver = false;
     
     // Trick
     public int score;
