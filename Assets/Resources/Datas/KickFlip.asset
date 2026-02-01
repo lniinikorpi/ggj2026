@@ -15,5 +15,5 @@ MonoBehaviour:
   trickName: KickFlip
   directions: 00000000
   trickTime: 0.5
-  clip: {fileID: 0}
+  clip: {fileID: -1755249548228608993, guid: 4320d1e8b81e15747b3da918163236aa, type: 3}
   boardClip: {fileID: 7400000, guid: 76911fe703826ae45af40c652c834f03, type: 2}

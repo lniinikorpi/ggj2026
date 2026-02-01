@@ -15,5 +15,5 @@ MonoBehaviour:
   trickName: HeelFlip
   directions: 01000000
   trickTime: 0.5
-  clip: {fileID: 0}
+  clip: {fileID: -4345905436648894559, guid: 4320d1e8b81e15747b3da918163236aa, type: 3}
   boardClip: {fileID: 7400000, guid: 34d0df73dad0f77409c9f1beeb7640a5, type: 2}
