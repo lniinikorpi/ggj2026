@@ -106,11 +106,13 @@ public class PlayerController : MonoBehaviour
  
     [SerializeField] private int maxBufferedDirections = 8;
 
-    
-    
-    
+
+
+
     private float isTricking;
     private float wasTricking;
+    private float isJumping;
+    private float wasJumping;
     private float lastTrickTime;
     private bool isTrickScorePending = false;
     
@@ -479,11 +481,29 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputValue value)
     {
-        if (Time.time < lastJumpTime + jumpCooldown) return;
-        if (!IsGrounded()) return;
-        if (!CanWriteVelocity(rb)) return;
-        
         float val = value.Get<float>();
+
+        isJumping = val;
+        bool pressed = isJumping > 0.5f && wasJumping <= 0.5f;
+        wasJumping = isJumping;
+
+        // In-air: allow Jump to trigger the same buffered trick logic as the Trick button.
+        if (!IsGrounded())
+        {
+            if (!pressed) return;
+            if (trickLocked) return;
+
+            TrickData trick = FindBestTrickFromBuffer();
+            if (trick != null)
+            {
+                ExecuteTrick(trick);
+            }
+
+            return;
+        }
+
+        if (Time.time < lastJumpTime + jumpCooldown) return;
+        if (!CanWriteVelocity(rb)) return;
         if (val == 1.0f)
         {
             foreach (var anim in animators)

@@ -388,6 +388,17 @@
                 },
                 {
                     "name": "",
+                    "id": "8d05cb37-9ff2-45d6-9576-5716fccb6c45",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Trick",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "122dec3c-1f0a-4e97-95b1-b6fc16fd0754",
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
